@@ -1,0 +1,33 @@
+{
+  "name": "d3-helper",
+  "version": "1.0.0",
+  "description": "d3 helper classes",
+  "license": "bsd",
+  "author": "info@camptocamp.com",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/geoblocks/d3-helper.git"
+  },
+  "source": "src/index.js",
+  "scripts": {
+    "build": "microbundle --format es",
+    "doc": "typedoc --out dist/api --theme minimal --readme none --hideGenerator --listInvalidSymbolLinks --toc none --exclude '**/*test*'",
+    "jest": "jest",
+    "lint": "npm run tslint && npm run typecheck",
+    "test": "npm run lint && npm run jest && npm run doc",
+    "tslint": "tslint src/*.js",
+    "typecheck": "tsc --pretty"
+  },
+  "dependencies": {
+    "d3": "^5.14.2"
+  },
+  "devDependencies": {
+    "@geoblocks/base": "^0.1.1",
+    "tslib": "^1.10.0",
+    "tslint": "~5.20.1",
+    "tslint-config-airbnb": "^5.11.2",
+    "tslint-consistent-codestyle": "^1.16.0",
+    "typedoc": "^0.16.11",
+    "typescript": "~3.7.5"
+  }
+}
