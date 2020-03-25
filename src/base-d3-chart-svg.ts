@@ -1,5 +1,14 @@
 import { select as d3Select } from 'd3-selection';
-import { Margins } from './report/report-type';
+
+/**
+ * Standard margins interface.
+ */
+export interface Margins {
+  top?: number;
+  right?: number;
+  bottom?: number;
+  left?: number;
+}
 
 export class BaseD3ChartSVG {
 
