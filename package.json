@@ -8,21 +8,24 @@
     "type": "git",
     "url": "git+ssh://git@github.com/geoblocks/d3-helper.git"
   },
-  "source": "src/index.js",
+  "source": "src/index.ts",
   "scripts": {
     "build": "microbundle --format es",
     "doc": "typedoc --out dist/api --theme minimal --readme none --hideGenerator --listInvalidSymbolLinks --toc none --exclude '**/*test*'",
-    "jest": "jest",
     "lint": "npm run tslint && npm run typecheck",
-    "test": "npm run lint && npm run jest && npm run doc",
+    "start": "parcel serve --port 8080 examples/**/*.html",
     "tslint": "tslint src/*.js",
     "typecheck": "tsc --pretty"
   },
   "dependencies": {
-    "d3": "^5.14.2"
+    "d3": "^5.14.2",
+    "dist": "^0.1.2"
   },
   "devDependencies": {
     "@geoblocks/base": "^0.1.1",
+    "es-dev-server": "^1.45.3",
+    "microbundle": "^0.11.0",
+    "parcel-bundler": "^1.12.4",
     "tslib": "^1.10.0",
     "tslint": "~5.20.1",
     "tslint-config-airbnb": "^5.11.2",
