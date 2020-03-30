@@ -5,12 +5,10 @@ import { CartesianChart, AxisType } from '../../dist/d3-helper';
 const config = {
   xAxis: {
     axisColumn: 'distance',
-    AxisType: AxisType.NUMBER,
     label: 'Distance',
   },
   yAxis: {
     axisColumn: 'elevation',
-    AxisType: AxisType.NUMBER,
     label: 'Elevation',
   },
 };

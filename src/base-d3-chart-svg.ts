@@ -10,6 +10,10 @@ export interface Margins {
   left?: number;
 }
 
+/**
+ * Base class for d3 svg charts.
+ * Draw and manage a svg element with a chart zone inside.
+ */
 export class BaseD3ChartSVG {
 
   private lastPartD3Selector_: string;
@@ -29,10 +33,17 @@ export class BaseD3ChartSVG {
     this.margins_ = { top: 60, right: 80, bottom: 60, left: 80 };
   }
 
+  /**
+   * Specify a supplementary path to the already defined d3Selector.
+   * That's useful for multiple generated charts elements.
+   */
   protected updateD3Selector_ (chartPath: string): void {
     this.d3Selector_ = `${chartPath} ${this.lastPartD3Selector_}`;
   }
 
+  /**
+   * Set default margins.
+   */
   protected setMargins_(margins: Margins): void {
     Object.assign(this.margins_, margins);
   }
@@ -47,10 +58,17 @@ export class BaseD3ChartSVG {
     ];
   }
 
+  /**
+   * Remove de SVG.
+   */
   protected removeSVG_(): void {
     d3Select(`${this.d3Selector_} svg`).remove();
   }
 
+  /**
+   * Draw the SVG with a 'chart' group inside.
+   * The element will always preserve its ratio.
+   */
   protected drawSVG_(): void {
     this.svg_ = d3Select(this.d3Selector_)
       .append('svg:svg')
