@@ -1,6 +1,6 @@
 import { curveMonotoneX as d3CurveMonotoneX, line as d3Line } from 'd3-shape';
 import { data } from '../data';
-import { CartesianChart, AxisType } from '../../dist/d3-helper';
+import { CartesianChart, AxisType } from '../../src/index';
 
 const config = {
   xAxis: {
