@@ -19,11 +19,15 @@ class lineChart extends CartesianChart {
   }
 
   draw() {
+    data.splice(0, 50); // Less data for a nicer chart.
+
+    // Use d3 helper functions.
     this.setCartesianConfig_(config);
     this.removeUpdateDrawSVG_();
     this.setXAxis_(data);
     this.setYAxis_(data);
 
+    // Draw a custom line chart.
     const lineFunction = d3Line()
       .curve(d3CurveMonotoneX)
       .x((d, i) => this.xScale_(this.xData_[i]))
