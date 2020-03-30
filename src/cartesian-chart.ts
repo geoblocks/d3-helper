@@ -146,7 +146,7 @@ export class CartesianChart extends BaseD3ChartSVG {
     }
 
     if (this.config_.color) {
-      this.color_ = this.config_.color; 
+      this.color_ = this.config_.color;
     }
   }
 
@@ -202,10 +202,10 @@ export class CartesianChart extends BaseD3ChartSVG {
   protected getDataType_(data: DataRow[], axisColumn: string): AxisType {
     const definedValues = data.find(dataRow => dataRow[axisColumn] !== null && dataRow[axisColumn] !== undefined);
     const definedValue = definedValues[axisColumn];
-    if (definedValue instanceof Date ) {
+    if (definedValue instanceof Date) {
       return AxisType.DATE;
     }
-    if (typeof definedValue === 'number' ) {
+    if (typeof definedValue === 'number') {
       return AxisType.NUMBER;
     }
     return AxisType.TEXT;
@@ -420,7 +420,7 @@ export class CartesianChart extends BaseD3ChartSVG {
       if (axisType === AxisType.DATE) {
         const dateFormat = d3TimeFormat(axisConfig.tickformat);
         return baseAxis.ticks(ticks).tickFormat(dateFormat);
-        }
+      }
 
       // Return ticks with formatted number values.
       if (axisType === AxisType.NUMBER) {
@@ -518,7 +518,6 @@ export class CartesianChart extends BaseD3ChartSVG {
     }
     return text;
   }
-
 
   /**
    * Determine if a given value from the x or y axes can be found in one given data entry

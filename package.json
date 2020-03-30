@@ -1,5 +1,5 @@
 {
-  "name": "d3-helper",
+  "name": "@geoblocks/d3-helper",
   "version": "1.0.0",
   "description": "d3 helper classes",
   "license": "bsd",
@@ -14,7 +14,7 @@
     "doc": "typedoc --out dist/api --theme minimal --readme none --hideGenerator --listInvalidSymbolLinks --toc none --exclude '**/*test*'",
     "lint": "npm run tslint && npm run typecheck",
     "start": "parcel serve --port 8080 examples/**/*.html",
-    "tslint": "tslint src/*.js",
+    "tslint": "tslint src/*.ts examples/**/*.js",
     "typecheck": "tsc --pretty"
   },
   "dependencies": {
