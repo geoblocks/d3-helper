@@ -13,7 +13,7 @@
     "helper"
   ],
   "files": [
-    "lib/index.js"
+    "/lib"
   ],
   "types": [
     "lib/index.d.ts"
