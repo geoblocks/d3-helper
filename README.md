@@ -38,6 +38,12 @@ npm run start
 
 Examples are now accessible at http://localhost:8080/
 
+## Build the doc
+
+`npm run doc`
+
+Api doc is now accessible in folder `apidoc`
+
 ## Publish a new version to npm
 ```
 npm version patch

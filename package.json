@@ -8,14 +8,16 @@
     "type": "git",
     "url": "git+ssh://git@github.com/geoblocks/d3-helper.git"
   },
+  "keywords": ["d3", "helper"],
+  "files": "lib/index.js",
+  "types": "lib/index.d.ts",
   "source": "src/index.ts",
   "scripts": {
-    "build": "microbundle --format es",
-    "doc": "typedoc --out dist/api --theme minimal --readme none --hideGenerator --listInvalidSymbolLinks --toc none --exclude '**/*test*'",
+    "build": "tsc --pretty",
+    "doc": "typedoc --out apidoc --theme minimal --readme none --hideGenerator --listInvalidSymbolLinks --toc none",
     "lint": "npm run tslint && npm run typecheck",
     "start": "parcel serve --port 8080 examples/**/*.html",
-    "tslint": "tslint src/*.ts examples/**/*.js",
-    "typecheck": "tsc --pretty"
+    "tslint": "tslint src/*.ts examples/**/*.js"
   },
   "dependencies": {
     "d3": "^5.14.2",
@@ -24,7 +26,6 @@
   "devDependencies": {
     "@geoblocks/base": "^0.1.1",
     "es-dev-server": "^1.45.3",
-    "microbundle": "^0.11.0",
     "parcel-bundler": "^1.12.4",
     "tslib": "^1.10.0",
     "tslint": "~5.20.1",
