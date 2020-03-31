@@ -1,6 +1,6 @@
 {
   "name": "@geoblocks/d3-helper",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "d3 helper classes",
   "license": "bsd",
   "author": "info@camptocamp.com",
@@ -8,7 +8,10 @@
     "type": "git",
     "url": "git+ssh://git@github.com/geoblocks/d3-helper.git"
   },
-  "keywords": ["d3", "helper"],
+  "keywords": [
+    "d3",
+    "helper"
+  ],
   "files": "lib/index.js",
   "types": "lib/index.d.ts",
   "source": "src/index.ts",
