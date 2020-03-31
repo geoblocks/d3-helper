@@ -1,6 +1,5 @@
 {
   "compileOnSave": false,
-  "include": ["src/**/*"],
   "compilerOptions": {
     "target": "es2015",
     "declaration": true,
