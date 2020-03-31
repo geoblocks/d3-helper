@@ -3,7 +3,12 @@
   "version": "1.0.5",
   "description": "d3 helper classes",
   "license": "bsd",
-  "author": "info@camptocamp.com",
+  "author": "Camptocamp SA <info@camptocamp.com> (https://www.camptocamp.com)",
+  "contributors": [
+    "Marion Baumgartner <marion.baumgartner@camptocamp.com>",
+    "Benjamin Gerber <benjamin.gerber@camptocamp.com>",
+    "Frederic Junod <frederic.junod@camptocamp.com>"
+  ],
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/geoblocks/d3-helper.git"
