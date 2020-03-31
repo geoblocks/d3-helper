@@ -47,8 +47,7 @@ Api doc is now accessible in folder `apidoc`
 ## Publish a new version to npm
 ```
 npm version patch
-npm publish
-git push --tags origin master
+npm run build && npm publish && git push --tags origin master
 ```
 
 ## Upcoming (probably):

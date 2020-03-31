@@ -15,6 +15,8 @@
   "files": [
     "/lib"
   ],
+  "main": "lib/index.js",
+  "module": "lib/index.js",
   "types": [
     "lib/index.d.ts"
   ],
@@ -22,9 +24,8 @@
   "scripts": {
     "build": "tsc --pretty",
     "doc": "typedoc --out apidoc --theme minimal --readme none --hideGenerator --listInvalidSymbolLinks --toc none",
-    "lint": "npm run tslint && npm run typecheck",
-    "start": "parcel serve --port 8080 examples/**/*.html",
-    "tslint": "tslint src/*.ts examples/**/*.js"
+    "lint": "tslint src/*.ts",
+    "start": "parcel serve --port 8080 examples/**/*.html"
   },
   "dependencies": {
     "d3": "^5.14.2"
