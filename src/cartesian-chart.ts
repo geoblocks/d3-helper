@@ -222,7 +222,7 @@ export class CartesianChart extends BaseD3ChartSVG {
     if (!axisColumn) {
       return;
     }
-    const axisType = this.getDataType_(data, axisColumn);
+    const axisType = this.getDataType_(data, axisConfig.tickLabelColumn || axisColumn);
     this.xData_ = data.map(value => value[axisColumn]);
     this.xScale_ = this.getScale_(this.xData_, axisType, [0, drawableWidth]);
     if (!this.config_.xAxis.hideAxis) {
@@ -241,7 +241,7 @@ export class CartesianChart extends BaseD3ChartSVG {
     if (!axisColumn) {
       return;
     }
-    const axisType = this.getDataType_(data, axisColumn);
+    const axisType = this.getDataType_(data, axisConfig.tickLabelColumn || axisColumn);
     this.yData_ = data.map(value => value[axisColumn]);
     this.yScale_ = this.getScale_(this.yData_, axisType, [drawableHeight, 0]);
     if (!this.config_.yAxis.hideAxis) {
@@ -260,7 +260,7 @@ export class CartesianChart extends BaseD3ChartSVG {
     if (!axisColumn) {
       return;
     }
-    const axisType = this.getDataType_(data, axisColumn);
+    const axisType = this.getDataType_(data, axisConfig.tickLabelColumn || axisColumn);
     this.oppositeYData_ = data.map(value => value[axisColumn]);
     this.oppositeYScale_ = this.getScale_(this.oppositeYData_, axisType, [drawableHeight, 0]);
     this.drawOppositeYAxis_(this.color_);
@@ -413,32 +413,29 @@ export class CartesianChart extends BaseD3ChartSVG {
   private setAxisTick_(axisConfig: CartesianChartAxisConfig, baseAxis: any, data: DataRow[]): void {
     const ticks = axisConfig.tickNumber || 5;
     const axisColumn = this.getAxisColumnName_(axisConfig, data);
-    const axisType = this.getDataType_(data, axisColumn);
+    const axisType = this.getDataType_(data, axisConfig.tickLabelColumn || axisColumn);
+    const compareFn = (d) => {
+      const dataRow = data.find(dataRow =>
+        this.compareData_(dataRow[axisColumn], d));
+      return dataRow[axisConfig.tickLabelColumn || axisColumn];
+    };
+
+    if (axisType === AxisType.TEXT) {
+      return baseAxis.ticks(ticks).tickFormat(compareFn);
+    }
 
     if (axisConfig.tickformat) {
       // Return ticks with nicely formatted Date values.
       if (axisType === AxisType.DATE) {
         const dateFormat = d3TimeFormat(axisConfig.tickformat);
-        return baseAxis.ticks(ticks).tickFormat(dateFormat);
+        return baseAxis.ticks(ticks).tickFormat(compareFn).tickFormat(dateFormat);
       }
 
       // Return ticks with formatted number values.
       if (axisType === AxisType.NUMBER) {
         const numberFormat = d3Format(axisConfig.tickformat);
-        return baseAxis.ticks(ticks).tickFormat(numberFormat);
+        return baseAxis.ticks(ticks).tickFormat(compareFn).tickFormat(numberFormat);
       }
-    }
-
-    // Return special text ticks with values that are taken from
-    // another column than what was used for plotting.
-    if (axisType === AxisType.TEXT && axisConfig.tickLabelColumn && data) {
-      const tickLabelName = axisConfig.tickLabelColumn;
-      return baseAxis.ticks(ticks)
-        .tickFormat((d) => {
-          const dataRow = data.find(dataRow =>
-            this.compareData_(dataRow[axisColumn], d));
-          return dataRow[tickLabelName];
-        });
     }
 
     // Return ticks in a standard way with out any formatting.

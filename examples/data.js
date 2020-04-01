@@ -96,7 +96,7 @@ export const data = [
   {"id":95,"elevation":1270,"distance":95,"date":"13/01/2020","company":"DuBuque, Hegmann and Frami"},
   {"id":96,"elevation":1063,"distance":96,"date":"23/02/2020","company":"Kub Group"},
   {"id":97,"elevation":777,"distance":97,"date":"12/02/2020","company":"Hermiston, Skiles and McKenzie"},
-  {"id":98,"elevation":1618,"distance":98,"date":"27/08/2019","company":"Wiegand-King"},
-  {"id":99,"elevation":572,"distance":99,"date":"13/08/2019","company":"Ortiz Group"},
+  {"id":98,"elevation":1618,"distance":98,"date":"27/08/2019","company":"Wiegand-King, Pfannerstill-Spinka and co"},
+  {"id":99,"elevation":572,"distance":99,"date":"13/08/2019","company":"Kub Group"},
   {"id":100,"elevation":652,"distance":100,"date":"04/05/2019","company":"Mayert-Rath"}
 ];
