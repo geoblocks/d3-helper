@@ -30,7 +30,7 @@
     "build": "tsc --pretty",
     "doc": "typedoc --out apidoc --theme minimal --readme none --hideGenerator --listInvalidSymbolLinks --toc none",
     "lint": "tslint src/*.ts",
-    "start": "parcel serve --port 8080 examples/**/*.html"
+    "start": "parcel serve --port 8080 examples/*.html --public-url /"
   },
   "dependencies": {
     "d3-axis": "^1.0.12",
