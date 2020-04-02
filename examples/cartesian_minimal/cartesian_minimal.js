@@ -11,14 +11,14 @@ const config = {
   },
 };
 
-class lineChart extends CartesianChart {
+data.splice(0, 50); // Less data for a nicer chart.
+
+class LineChart extends CartesianChart {
   constructor() {
     super('.chart');
   }
 
   draw() {
-    data.splice(0, 50); // Less data for a nicer chart.
-
     // Set the config for CartesianChart.
     this.setCartesianConfig_(config);
     // Use BaseD3ChartSVG to draw the svg.
@@ -48,5 +48,5 @@ class lineChart extends CartesianChart {
   }
 }
 
-const chart = new lineChart();
+const chart = new LineChart();
 chart.draw();

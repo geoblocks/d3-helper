@@ -263,7 +263,7 @@ export class CartesianChart extends BaseD3ChartSVG {
     const axisType = this.getDataType_(data, axisConfig.tickLabelColumn || axisColumn);
     this.oppositeYData_ = data.map(value => value[axisColumn]);
     this.oppositeYScale_ = this.getScale_(this.oppositeYData_, axisType, [drawableHeight, 0]);
-    this.drawOppositeYAxis_(this.color_);
+    this.drawOppositeYAxis_(this.color_, data);
   }
 
   /**
