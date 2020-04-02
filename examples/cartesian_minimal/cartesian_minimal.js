@@ -5,11 +5,9 @@ import { CartesianChart, AxisType } from '../../src/index';
 const config = {
   xAxis: {
     axisColumn: 'distance',
-    label: 'Distance',
   },
   yAxis: {
     axisColumn: 'elevation',
-    label: 'Elevation',
   },
 };
 
@@ -21,9 +19,14 @@ class lineChart extends CartesianChart {
   draw() {
     data.splice(0, 50); // Less data for a nicer chart.
 
-    // Use d3 helper functions.
+    // Set the config for CartesianChart.
     this.setCartesianConfig_(config);
+    // Use BaseD3ChartSVG to draw the svg.
     this.removeUpdateDrawSVG_();
+    // Optionally, use CartesianChart to get label for axis from the data.
+    this.useDataLabelAsDefaultForAxis_('xAxis');
+    this.useDataLabelAsDefaultForAxis_('yAxis');
+    // Draw axis using CartesianChart.
     this.setXAxis_(data);
     this.setYAxis_(data);
 

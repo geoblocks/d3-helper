@@ -21,6 +21,7 @@ Class that provides functions to draw, clean and manage a SVG with a chart insid
 Extends BaseD3ChartSVG.
 Class that provides functions to manage cartesian charts (bars, scatterplots, lines...)
 Especially manage the axis of cartesian charts.
+Supported axis data types are: Date, number and text.
 
 ### Supported browsers
 
