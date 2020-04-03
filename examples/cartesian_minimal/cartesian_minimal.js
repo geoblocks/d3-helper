@@ -36,9 +36,7 @@ class LineChart extends CartesianChart {
       .x((d, i) => this.xScale_(this.xData_[i]))
       .y(d => this.yScale_(d));
 
-    this.chart_.selectAll()
-      .data(this.yData_)
-      .enter()
+    this.chart_
       .append('path')
       .attr('class', 'line')
       .attr('d', lineFunction(this.yData_))

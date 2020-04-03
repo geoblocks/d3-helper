@@ -1,6 +1,9 @@
 import { curveMonotoneX as d3CurveMonotoneX, line as d3Line } from 'd3-shape';
+import { transition } from 'd3-transition';
 import { data as rawData } from '../data';
 import { CartesianChart, AxisType } from '../../src/index';
+
+// -> http://bl.ocks.org/methodofaction/4063326
 
 const config = {
   color: [25, 25, 150],
@@ -52,10 +55,15 @@ class lineBarChart extends CartesianChart {
       .append('rect')
       .attr('class', 'bar')
       .attr('x', (d, i) => this.xScale_(this.xData_[i]) - barWidth / 2)
-      .attr('y', d => this.yScale_(d))
-      .attr('height', d => drawHeight - this.yScale_(d))
+      .attr('y', drawHeight)
+      .attr('height',  0)
       .attr('width', barWidth)
-      .attr('fill', `rgb(${this.color_.join(',')})`);
+      .attr('fill', `rgb(${this.color_.join(',')})`)
+      // Add a custom transition on two attributes to have growing vertical bars.
+      .transition()
+      .duration(1500)
+      .attr('y', d => this.yScale_(d))
+      .attr('height', d => drawHeight - this.yScale_(d));
 
     // Draw a custom line chart on x and opposit y axis.
     const color = [200, 50, 100]
@@ -64,15 +72,21 @@ class lineBarChart extends CartesianChart {
       .x((d, i) => this.xScale_(this.xData_[i]))
       .y(d => this.oppositeYScale_(d));
 
-    this.chart_.selectAll()
-      .data(this.yData_)
-      .enter()
+    const line = this.chart_
       .append('path')
       .attr('class', 'line')
       .attr('d', lineFunction(this.oppositeYData_))
       .attr('stroke', `rgb(${color.join(',')})`)
       .attr('stroke-width', '2')
       .attr('fill', 'none');
+    // Animation for the line
+    const lineLength = line.node().getTotalLength();
+    line
+      .attr("stroke-dasharray", lineLength + " " + lineLength)
+      .attr("stroke-dashoffset", lineLength)
+      .transition()
+      .duration(1500)
+      .attr("stroke-dashoffset", 0);
   }
 }
 
