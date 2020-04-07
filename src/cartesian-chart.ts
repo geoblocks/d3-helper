@@ -39,6 +39,10 @@ export interface CartesianChartAxisConfig {
    */
   axisColumn: string;
   /**
+   * Color For axis label.
+   */
+  color?: number[];
+  /**
    * Axis static label.
    * If not set, the chart may try to use the axis column as label.
    */
@@ -217,7 +221,7 @@ export class CartesianChart extends BaseD3ChartSVG {
     this.xData_ = data.map(value => value[axisColumn]);
     this.xScale_ = this.getScale_(this.xData_, axisType, [0, drawableWidth]);
     if (!this.config_.xAxis.hideAxis) {
-      this.drawXAxis_(this.color_, data);
+      this.drawXAxis_(axisConfig.color || this.color_, data);
     }
   }
 
@@ -236,7 +240,7 @@ export class CartesianChart extends BaseD3ChartSVG {
     this.yData_ = data.map(value => value[axisColumn]);
     this.yScale_ = this.getScale_(this.yData_, axisType, [drawableHeight, 0]);
     if (!this.config_.yAxis.hideAxis) {
-      this.drawYAxis_(this.color_, data);
+      this.drawYAxis_(axisConfig.color || this.color_, data);
     }
   }
 
@@ -254,7 +258,7 @@ export class CartesianChart extends BaseD3ChartSVG {
     const axisType = this.getDataType_(data, axisConfig.tickLabelColumn || axisColumn);
     this.oppositeYData_ = data.map(value => value[axisColumn]);
     this.oppositeYScale_ = this.getScale_(this.oppositeYData_, axisType, [drawableHeight, 0]);
-    this.drawOppositeYAxis_(this.color_, data);
+    this.drawOppositeYAxis_(axisConfig.color || this.color_, data);
   }
 
   /**

@@ -18,6 +18,7 @@ const config = {
   oppositeYAxis: {
     axisColumn: 'distance',
     label: 'Discount',
+    color: [200, 50, 100]
   },
 };
 
@@ -66,7 +67,6 @@ class lineBarChart extends CartesianChart {
       .attr('height', d => drawHeight - this.yScale_(d));
 
     // Draw a custom line chart on x and opposit y axis.
-    const color = [200, 50, 100]
     const lineFunction = d3Line()
       .curve(d3CurveMonotoneX)
       .x((d, i) => this.xScale_(this.xData_[i]))
@@ -76,7 +76,7 @@ class lineBarChart extends CartesianChart {
       .append('path')
       .attr('class', 'line')
       .attr('d', lineFunction(this.oppositeYData_))
-      .attr('stroke', `rgb(${color.join(',')})`)
+      .attr('stroke', `rgb(${this.config_.oppositeYAxis.color.join(',')})`)
       .attr('stroke-width', '2')
       .attr('fill', 'none');
     // Animation for the line
