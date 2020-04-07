@@ -165,15 +165,6 @@ export class CartesianChart extends BaseD3ChartSVG {
   }
 
   /**
-   * Update the size of the svg element.
-   * The element svg must be redrawn after.
-   */
-  protected updateSize_(element: Element): void {
-    this.width_ = (element as HTMLElement).offsetWidth;
-    this.height_ = (element as HTMLElement).offsetHeight;
-  }
-
-  /**
    * Reset the chart.
    * Remove, update the size, and draw the SVG again.
    */

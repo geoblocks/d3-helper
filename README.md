@@ -53,6 +53,5 @@ npm run build && npm publish && git push --tags origin master
 
 ## Upcoming (probably):
 
-* More examples.
 * Tooltips helpers for data.
 * Tests.

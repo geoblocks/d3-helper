@@ -59,6 +59,15 @@ export class BaseD3ChartSVG {
   }
 
   /**
+   * Update the size of the svg element.
+   * The element svg must be redrawn after.
+   */
+  protected updateSize_(element: Element): void {
+    this.width_ = (element as HTMLElement).offsetWidth;
+    this.height_ = (element as HTMLElement).offsetHeight;
+  }
+
+  /**
    * Remove de SVG.
    */
   protected removeSVG_(): void {
