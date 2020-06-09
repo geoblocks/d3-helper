@@ -20,27 +20,27 @@ class LineChart extends CartesianChart {
 
   draw() {
     // Set the config for CartesianChart.
-    this.setCartesianConfig_(config);
+    this.setConfig(config);
     // Use BaseD3ChartSVG to draw the svg.
-    this.removeUpdateDrawSVG_();
+    this.removeUpdateDrawSVG();
     // Optionally, use CartesianChart to get label for axis from the data.
-    this.useDataLabelAsDefaultForAxis_('xAxis');
-    this.useDataLabelAsDefaultForAxis_('yAxis');
+    this.useDataLabelAsDefaultForAxis('xAxis');
+    this.useDataLabelAsDefaultForAxis('yAxis');
     // Draw axis using CartesianChart.
-    this.setXAxis_(data);
-    this.setYAxis_(data);
+    this.setXAxis(data);
+    this.setYAxis(data);
 
     // Draw a custom line chart.
     const lineFunction = d3Line()
       .curve(d3CurveMonotoneX)
-      .x((d, i) => this.xScale_(this.xData_[i]))
-      .y(d => this.yScale_(d));
+      .x((d, i) => this.xScale(this.xData[i]))
+      .y(d => this.yScale(d));
 
-    this.chart_
+    this.chart
       .append('path')
       .attr('class', 'line')
-      .attr('d', lineFunction(this.yData_))
-      .attr('stroke', `rgb(${this.color_.join(',')})`)
+      .attr('d', lineFunction(this.yData))
+      .attr('stroke', `rgb(${this.color.join(',')})`)
       .attr('stroke-width', '1')
       .attr('fill', 'none');
   }

@@ -84,6 +84,10 @@ export interface CartesianChartConfig {
    */
   color?: number[];
   /**
+  * Buffer (add space around left and right borders of data) or not. Default to false (not buffered).
+  */
+  domainAlwaysBuffered?: boolean;
+  /**
    * Secondary opposite Axis configuration. Will need a second dataset to setup the axis.
    */
   oppositeYAxis?: CartesianChartAxisConfig;
@@ -109,22 +113,26 @@ export class CartesianChart extends BaseD3ChartSVG {
 
   private config_: CartesianChartConfig;
 
-  protected color_: number[];
-  protected domaineAlwaysBuffered_: boolean;
+  color: number[];
 
-  protected xData_: DataValue[];
-  protected yData_: DataValue[];
-  protected oppositeYData_: DataValue[];
+  xData: DataValue[];
+  yData: DataValue[];
+  oppositeYData: DataValue[];
 
-  protected xScale_: any;
-  protected yScale_: any;
-  protected oppositeYScale_: any;
+  xScale: any;
+  yScale: any;
+  oppositeYScale: any;
 
   constructor(d3Selector: string) {
     super(d3Selector);
-    this.d3Selector_ = d3Selector;
-    this.domaineAlwaysBuffered_ = false;
-    this.color_ = [100, 100, 100];
+    this.color = [100, 100, 100];
+  }
+
+  /**
+   * Get the config.
+   */
+  getConfig(): CartesianChartConfig {
+    return this.config_;
   }
 
   /**
@@ -132,58 +140,58 @@ export class CartesianChart extends BaseD3ChartSVG {
    * The configuration must be set before to use other functions and not set between functions (except
    * functions to clear the chart).
    */
-  protected setCartesianConfig_(config: CartesianChartConfig): void {
+  setConfig(config: CartesianChartConfig): void {
     this.config_ = config;
     if (this.config_.chartPath) {
-      this.updateD3Selector_(this.config_.chartPath);
+      this.updateD3Selector(this.config_.chartPath);
     }
     if (this.config_.xAxis.hideAxis) {
-      this.margins_.right = 5;
-      this.margins_.left = 5;
+      this.margins.right = 5;
+      this.margins.left = 5;
     }
     if (this.config_.yAxis.hideAxis) {
-      this.margins_.top = 5;
-      this.margins_.bottom = 5;
+      this.margins.top = 5;
+      this.margins.bottom = 5;
     }
     if (this.config_.margins) {
-      this.setMargins_(this.config_.margins);
+      this.setMargins(this.config_.margins);
     }
 
     if (this.config_.color) {
-      this.color_ = this.config_.color;
+      this.color = this.config_.color;
     }
   }
 
   /**
    * Remove the svg an reset the cartesian.
    */
-  protected cleanCartesian_(): void {
-    this.removeSVG_();
-    this.xData_ = null;
-    this.yData_ = null;
-    this.oppositeYData_ = null;
+  cleanCartesian(): void {
+    this.removeSVG();
+    this.xData = null;
+    this.yData = null;
+    this.oppositeYData = null;
 
-    this.xScale_ = null;
-    this.yScale_ = null;
-    this.oppositeYScale_ = null;
+    this.xScale = null;
+    this.yScale = null;
+    this.oppositeYScale = null;
   }
 
   /**
    * Reset the chart.
    * Remove, update the size, and draw the SVG again.
    */
-  protected removeUpdateDrawSVG_(): void {
-    const element = document.querySelector(this.d3Selector_);
-    this.cleanCartesian_();
-    this.updateSize_(element);
-    this.drawSVG_();
+  removeUpdateDrawSVG(): void {
+    const element = document.querySelector(this.getD3Selector());
+    this.cleanCartesian();
+    this.updateSize(element);
+    this.drawSVG();
   }
 
   /**
    * Returns the axisColumn.
    * If data are given, check if the column exists. Returns null if that's not the case.
    */
-  protected getAxisColumnName_(axisConfig: CartesianChartAxisConfig, data?: DataRow[]): string {
+  getAxisColumnName(axisConfig: CartesianChartAxisConfig, data?: DataRow[]): string {
     const axisColumn = axisConfig.axisColumn;
     if (data && data.length > 0 && (data[0][axisColumn] === undefined || data[0][axisColumn] === null)) {
       return null;
@@ -194,7 +202,7 @@ export class CartesianChart extends BaseD3ChartSVG {
   /**
    * Return the AxisType of the first defined value of the given DataRow.
    */
-  protected getDataType_(data: DataRow[], axisColumn: string): AxisType {
+  getDataType(data: DataRow[], axisColumn: string): AxisType {
     const definedValues = data.find(dataRow => dataRow[axisColumn] !== null && dataRow[axisColumn] !== undefined);
     const definedValue = definedValues[axisColumn];
     if (definedValue instanceof Date) {
@@ -209,75 +217,75 @@ export class CartesianChart extends BaseD3ChartSVG {
   /**
    * Set and draw the X axis using the config and the data.
    */
-  protected setXAxis_(data: DataRow[]): void {
-    d3Select(`${this.d3Selector_} svg .xaxis`).remove();
-    const drawableWidth = this.getDrawableSize_()[0];
+  setXAxis(data: DataRow[]): void {
+    d3Select(`${this.getD3Selector()} svg .xaxis`).remove();
+    const drawableWidth = this.getDrawableSize()[0];
     const axisConfig = this.config_.xAxis;
-    const axisColumn = this.getAxisColumnName_(axisConfig, data);
+    const axisColumn = this.getAxisColumnName(axisConfig, data);
     if (!axisColumn) {
       return;
     }
-    const axisType = this.getDataType_(data, axisConfig.tickLabelColumn || axisColumn);
-    this.xData_ = data.map(value => value[axisColumn]);
-    this.xScale_ = this.getScale_(this.xData_, axisType, [0, drawableWidth]);
+    const axisType = this.getDataType(data, axisConfig.tickLabelColumn || axisColumn);
+    this.xData = data.map(value => value[axisColumn]);
+    this.xScale = this.getScale(this.xData, axisType, [0, drawableWidth]);
     if (!this.config_.xAxis.hideAxis) {
-      this.drawXAxis_(axisConfig.color || this.color_, data);
+      this.drawXAxis(axisConfig.color || this.color, data);
     }
   }
 
   /**
    * Set and draw the Y axis using the config and the data.
    */
-  protected setYAxis_(data: DataRow[]): void {
-    d3Select(`${this.d3Selector_} svg .yaxis`).remove();
-    const drawableHeight = this.getDrawableSize_()[1];
+  setYAxis(data: DataRow[]): void {
+    d3Select(`${this.getD3Selector()} svg .yaxis`).remove();
+    const drawableHeight = this.getDrawableSize()[1];
     const axisConfig = this.config_.yAxis;
-    const axisColumn = this.getAxisColumnName_(axisConfig, data);
+    const axisColumn = this.getAxisColumnName(axisConfig, data);
     if (!axisColumn) {
       return;
     }
-    const axisType = this.getDataType_(data, axisConfig.tickLabelColumn || axisColumn);
-    this.yData_ = data.map(value => value[axisColumn]);
-    this.yScale_ = this.getScale_(this.yData_, axisType, [drawableHeight, 0]);
+    const axisType = this.getDataType(data, axisConfig.tickLabelColumn || axisColumn);
+    this.yData = data.map(value => value[axisColumn]);
+    this.yScale = this.getScale(this.yData, axisType, [drawableHeight, 0]);
     if (!this.config_.yAxis.hideAxis) {
-      this.drawYAxis_(axisConfig.color || this.color_, data);
+      this.drawYAxis(axisConfig.color || this.color, data);
     }
   }
 
   /**
    * Set and draw the opposite Y axis using the config and the data.
    */
-  protected setOppositeYAxis_(data: DataRow[]): void {
-    d3Select(`${this.d3Selector_} svg .opposite-yaxis`).remove();
-    const drawableHeight = this.getDrawableSize_()[1];
+  setOppositeYAxis(data: DataRow[]): void {
+    d3Select(`${this.getD3Selector()} svg .opposite-yaxis`).remove();
+    const drawableHeight = this.getDrawableSize()[1];
     const axisConfig = this.config_.oppositeYAxis;
-    const axisColumn = this.getAxisColumnName_(axisConfig, data);
+    const axisColumn = this.getAxisColumnName(axisConfig, data);
     if (!axisColumn) {
       return;
     }
-    const axisType = this.getDataType_(data, axisConfig.tickLabelColumn || axisColumn);
-    this.oppositeYData_ = data.map(value => value[axisColumn]);
-    this.oppositeYScale_ = this.getScale_(this.oppositeYData_, axisType, [drawableHeight, 0]);
-    this.drawOppositeYAxis_(axisConfig.color || this.color_, data);
+    const axisType = this.getDataType(data, axisConfig.tickLabelColumn || axisColumn);
+    this.oppositeYData = data.map(value => value[axisColumn]);
+    this.oppositeYScale = this.getScale(this.oppositeYData, axisType, [drawableHeight, 0]);
+    this.drawOppositeYAxis(axisConfig.color || this.color, data);
   }
 
   /**
    * Draw a title at the center of the chart.
    */
-  protected drawTitle_(colors: number[], subTitle?: string): void {
+  drawTitle(colors: number[], subTitle?: string): void {
     const title = this.config_.title;
-    this.svg_.append('text')
+    this.svg.append('text')
       .attr('class', 'title')
-      .attr('x', this.width_ / 2)
-      .attr('y', this.margins_.top / 2)
+      .attr('x', this.width / 2)
+      .attr('y', this.margins.top / 2)
       .attr('font-size', '1.2rem')
       .attr('fill', `rgb(${colors.join(',')})`)
       .style('text-anchor', 'middle')
       .text(title);
-    this.svg_.append('text')
+    this.svg.append('text')
       .attr('class', 'subtitle')
-      .attr('x', this.width_ / 2)
-      .attr('y', this.margins_.top / 2)
+      .attr('x', this.width / 2)
+      .attr('y', this.margins.top / 2)
       .attr('font-size', '1.2rem')
       .attr('fill', `rgb(${colors.join(',')})`)
       .style('text-anchor', 'middle')
@@ -287,24 +295,24 @@ export class CartesianChart extends BaseD3ChartSVG {
   /**
    * Draw the X axis in the chart of the svg.
    */
-  protected drawXAxis_(colors: number[], data?: DataRow[]): void {
-    const axis = this.setAxisTick_(this.config_.xAxis, d3AxisBottom(this.xScale_), data);
-    const [drawableWidth, drawableHeight] = this.getDrawableSize_();
-    this.chart_.append('g')
+  drawXAxis(colors: number[], data?: DataRow[]): void {
+    const axis = this.setAxisTick(this.config_.xAxis, d3AxisBottom(this.xScale), data);
+    const [drawableWidth, drawableHeight] = this.getDrawableSize();
+    this.chart.append('g')
       .attr('transform', `translate(0, ${drawableHeight})`)
       .attr('class', 'chart xaxis')
       .call(axis)
       .append('text')
       .attr('class', 'label')
       .attr('x', drawableWidth / 2)
-      .attr('y', this.margins_.bottom - 5)
+      .attr('y', this.margins.bottom - 5)
       .attr('fill', `rgb(${colors.join(',')})`)
       .style('text-anchor', 'middle')
       .style('font-size', '1.1em')
       .text(this.config_.xAxis.label);
 
-    this.chart_.selectAll('.xaxis .tick text')
-      .call(this.wrapAxisLabels_, this.margins_.bottom - 15, 0)
+    this.chart.selectAll('.xaxis .tick text')
+      .call(this.wrapAxisLabels, this.margins.bottom - 15, 0)
       .attr('transform', 'translate(0, 8) rotate(-36)')
       .attr('text-anchor', 'end');
   }
@@ -312,9 +320,9 @@ export class CartesianChart extends BaseD3ChartSVG {
   /**
    * Draw the X axis in the chart of the svg.
    */
-  protected drawYAxis_(colors: number[], data?: DataRow[]): void {
-    const axis = this.setAxisTick_(this.config_.yAxis, d3AxisLeft(this.yScale_), data);
-    this.chart_.append('g')
+  drawYAxis(colors: number[], data?: DataRow[]): void {
+    const axis = this.setAxisTick(this.config_.yAxis, d3AxisLeft(this.yScale), data);
+    this.chart.append('g')
       .attr('transform', 'translate(0,0)')
       .attr('class', 'chart yaxis')
       .call(axis)
@@ -327,17 +335,17 @@ export class CartesianChart extends BaseD3ChartSVG {
       .style('font-size', '1.1em')
       .text(this.config_.yAxis.label);
 
-    this.chart_.selectAll('.yaxis .tick text')
-      .call(this.wrapAxisLabels_, this.margins_.left - 15, -10);
+    this.chart.selectAll('.yaxis .tick text')
+      .call(this.wrapAxisLabels, this.margins.left - 15, -10);
   }
 
   /**
    * Draw the opposite Y axis in the chart of the svg.
    */
-  protected drawOppositeYAxis_(colors: number[], data?: DataRow[]): void {
-    const drawableWidth = this.getDrawableSize_()[0];
-    const axis = this.setAxisTick_(this.config_.oppositeYAxis, d3AxisRight(this.oppositeYScale_), data);
-    this.chart_.append('g')
+  drawOppositeYAxis(colors: number[], data?: DataRow[]): void {
+    const drawableWidth = this.getDrawableSize()[0];
+    const axis = this.setAxisTick(this.config_.oppositeYAxis, d3AxisRight(this.oppositeYScale), data);
+    this.chart.append('g')
       .attr('transform', `translate(${drawableWidth}, 0)`)
       .attr('class', 'chart opposite-yaxis')
       .call(axis)
@@ -350,14 +358,14 @@ export class CartesianChart extends BaseD3ChartSVG {
       .style('font-size', '1.1em')
       .text(this.config_.oppositeYAxis.label);
 
-    this.chart_.selectAll('.opposite-yaxis .tick text')
-      .call(this.wrapAxisLabels_, this.margins_.right - 15, 10);
+    this.chart.selectAll('.opposite-yaxis .tick text')
+      .call(this.wrapAxisLabels, this.margins.right - 15, 10);
   }
 
   /*
    * Add line break on too long axis levels labels.
    */
-  private wrapAxisLabels_(text: any, width: number, x: number): void {
+    wrapAxisLabels(text: any, width: number, x: number): void {
     text.nodes().forEach((node) => {
       const textSelection = d3Select(node);
       const words = textSelection.text().replace('-', '- ').replace('.', '. ').split(/\s+/);
@@ -405,13 +413,13 @@ export class CartesianChart extends BaseD3ChartSVG {
    * @param baseAxis a base axis to add the ticks
    * @param data Data to determine AxisType
    */
-  private setAxisTick_(axisConfig: CartesianChartAxisConfig, baseAxis: any, data: DataRow[]): void {
+  setAxisTick(axisConfig: CartesianChartAxisConfig, baseAxis: any, data: DataRow[]): void {
     const ticks = axisConfig.tickNumber || 5;
-    const axisColumn = this.getAxisColumnName_(axisConfig, data);
-    const axisType = this.getDataType_(data, axisConfig.tickLabelColumn || axisColumn);
+    const axisColumn = this.getAxisColumnName(axisConfig, data);
+    const axisType = this.getDataType(data, axisConfig.tickLabelColumn || axisColumn);
     const compareFn = (d) => {
       const dataRow = data.find(dataRow =>
-        this.compareData_(dataRow[axisColumn], d));
+        this.compareData(dataRow[axisColumn], d));
       return dataRow[axisConfig.tickLabelColumn || axisColumn];
     };
 
@@ -440,7 +448,7 @@ export class CartesianChart extends BaseD3ChartSVG {
   /**
    * Return a scale function adapted to the type of data of the axis.
    */
-  private getScale_(axisData: any, axisType: string, range: number[]): any {
+  getScale(axisData: any, axisType: string, range: number[]): any {
     let scale: any;
     if (axisType === AxisType.TEXT) {
       scale = d3ScalePoint()
@@ -454,7 +462,7 @@ export class CartesianChart extends BaseD3ChartSVG {
         scale = d3ScaleLinear();
       }
       scale.domain(
-        this.determineDomain_(
+        this.determineDomain(
           d3Min(axisData),
           d3Max(axisData),
         ),
@@ -469,8 +477,8 @@ export class CartesianChart extends BaseD3ChartSVG {
    * Create an array containing the min and the max value determining the domain used for the axis.
    * Can use a buffer around the value to create new max and min values around the given value.
    */
-  private determineDomain_(minValue: number|Date, maxValue: number|Date): (number|Date)[] {
-    if (minValue !== maxValue && !this.domaineAlwaysBuffered_) {
+  determineDomain(minValue: number|Date, maxValue: number|Date): (number|Date)[] {
+    if (minValue !== maxValue && !this.config_?.domainAlwaysBuffered) {
       return [minValue, maxValue];
     }
     if (minValue instanceof Date && maxValue instanceof Date) {
@@ -492,10 +500,10 @@ export class CartesianChart extends BaseD3ChartSVG {
   /**
    * Use the name of the key of the data of the axis as axis label if no label is configured for this axis.
    */
-  protected useDataLabelAsDefaultForAxis_(axis: string): void {
+  useDataLabelAsDefaultForAxis(axis: string): void {
     const axisConfig = this.config_[axis];
     if (axisConfig && !axisConfig.label) {
-      axisConfig.label = this.getAxisColumnName_(axisConfig) || '';
+      axisConfig.label = this.getAxisColumnName(axisConfig) || '';
     }
   }
 
@@ -504,7 +512,7 @@ export class CartesianChart extends BaseD3ChartSVG {
    * @param text string to truncate.
    * @param length max number of characters (defaults to 30).
    */
-  protected truncText_ (text: string, length: number = 30): string {
+  truncText (text: string, length: number = 30): string {
     if (text.length > length) {
       return `${text.substring(0, length)} ...`;
     }
@@ -516,7 +524,7 @@ export class CartesianChart extends BaseD3ChartSVG {
    * @param axisColumnName: the base value.
    * @param selectedValue the value to compare with.
    */
-  private compareData_(value: DataValue, selectedValue: DataValue): boolean {
+  compareData(value: DataValue, selectedValue: DataValue): boolean {
     // Comparison for date values
     if (value instanceof Date && selectedValue instanceof Date) {
       return value.getTime() === selectedValue.getTime();
