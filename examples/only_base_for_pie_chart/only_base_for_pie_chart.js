@@ -28,16 +28,16 @@ class LineChart extends BaseD3ChartSVG {
 
   draw() {
     // Use BaseD3ChartSVG to draw the svg.
-    this.updateSize_(document.querySelector(this.d3Selector_));
+    this.updateSize(document.querySelector(this.getD3Selector()));
     // Move pie-chart to the center of the svg.
-    this.setMargins_({ top: this.height_ / 2, left: this.width_ / 2 });
+    this.setMargins({ top: this.height / 2, left: this.width / 2 });
     // Draw the svg.
-    this.drawSVG_();
+    this.drawSVG();
 
     // Draw a custom pie chart.
-    const outerRadius = Math.min(this.width_, this.height_) / 2;
+    const outerRadius = Math.min(this.width, this.height) / 2;
     const arc = d3Arc().innerRadius(outerRadius / 2).outerRadius(outerRadius)
-    const pie = this.chart_.selectAll()
+    const pie = this.chart.selectAll()
       .data(this.pie_(data))
       .enter()
       .append("g")

@@ -38,22 +38,21 @@ class hBarChart extends CartesianChart {
 
   constructor(config) {
     super('.chart');
-    this.config = config;
+    this.setConfig(config);
   }
 
   draw() {
-
+    const config = this.getConfig();
     // Use d3 helper functions.
-    this.setCartesianConfig_(this.config);
-    this.removeUpdateDrawSVG_();
-    this.setXAxis_(data);
-    this.setYAxis_(data);
-    this.drawTitle_(this.config_.color);
+    this.removeUpdateDrawSVG();
+    this.setXAxis(data);
+    this.setYAxis(data);
+    this.drawTitle(config.color);
 
     // Draw a custom line chart.
     // Draw a custom  horizontal-bars chart
-    const barGroups = this.chart_.selectAll()
-      .data(this.yData_)
+    const barGroups = this.chart.selectAll()
+      .data(this.yData)
       .enter()
       .append('g');
     
@@ -62,10 +61,10 @@ class hBarChart extends CartesianChart {
       .append('rect')
       .attr('class', 'bar')
       .attr('x', 0)
-      .attr('y', d => this.yScale_(d) - barHeight / 2)
+      .attr('y', d => this.yScale(d) - barHeight / 2)
       .attr('height', barHeight)
-      .attr('width', (d, i) => this.xScale_(this.xData_[i]))
-      .attr('fill', `rgb(${this.config_.color.join(',')})`);
+      .attr('width', (d, i) => this.xScale(this.xData[i]))
+      .attr('fill', `rgb(${config.color.join(',')})`);
   }
 }
 

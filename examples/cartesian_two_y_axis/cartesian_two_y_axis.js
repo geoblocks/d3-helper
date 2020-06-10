@@ -36,47 +36,46 @@ class lineBarChart extends CartesianChart {
   }
 
   draw() {
-
     // Use d3 helper functions.
-    this.setCartesianConfig_(config);
-    this.removeUpdateDrawSVG_();
-    this.setXAxis_(data);
-    this.setYAxis_(data);
-    this.setOppositeYAxis_(data);
+    this.setConfig(config);
+    this.removeUpdateDrawSVG();
+    this.setXAxis(data);
+    this.setYAxis(data);
+    this.setOppositeYAxis(data);
 
     // Draw a custom vertical bars chart.
-    const barGroups = this.chart_.selectAll()
-      .data(this.yData_)
+    const barGroups = this.chart.selectAll()
+      .data(this.yData)
       .enter()
       .append('g');
 
-    const [drawWidth, drawHeight] = this.getDrawableSize_();
-    const barWidth = drawWidth / 4 / this.yData_.length;
+    const [drawWidth, drawHeight] = this.getDrawableSize();
+    const barWidth = drawWidth / 4 / this.yData.length;
     barGroups
       .append('rect')
       .attr('class', 'bar')
-      .attr('x', (d, i) => this.xScale_(this.xData_[i]) - barWidth / 2)
+      .attr('x', (d, i) => this.xScale(this.xData[i]) - barWidth / 2)
       .attr('y', drawHeight)
       .attr('height',  0)
       .attr('width', barWidth)
-      .attr('fill', `rgb(${this.color_.join(',')})`)
+      .attr('fill', `rgb(${this.color.join(',')})`)
       // Add a custom transition on two attributes to have growing vertical bars.
       .transition()
       .duration(1500)
-      .attr('y', d => this.yScale_(d))
-      .attr('height', d => drawHeight - this.yScale_(d));
+      .attr('y', d => this.yScale(d))
+      .attr('height', d => drawHeight - this.yScale(d));
 
     // Draw a custom line chart on x and opposit y axis.
     const lineFunction = d3Line()
       .curve(d3CurveMonotoneX)
-      .x((d, i) => this.xScale_(this.xData_[i]))
-      .y(d => this.oppositeYScale_(d));
+      .x((d, i) => this.xScale(this.xData[i]))
+      .y(d => this.oppositeYScale(d));
 
-    const line = this.chart_
+    const line = this.chart
       .append('path')
       .attr('class', 'line')
-      .attr('d', lineFunction(this.oppositeYData_))
-      .attr('stroke', `rgb(${this.config_.oppositeYAxis.color.join(',')})`)
+      .attr('d', lineFunction(this.oppositeYData))
+      .attr('stroke', `rgb(${config.oppositeYAxis.color.join(',')})`)
       .attr('stroke-width', '2')
       .attr('fill', 'none');
     // Animation for the line
