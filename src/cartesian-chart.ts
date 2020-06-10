@@ -10,15 +10,13 @@ import { getRoundedNumber } from './utils';
 /**
  * One value of data
  */
-export interface DataValue {
-  value: string|number|Date;
-}
+export type DataValue = (string|number|Date);
 
 /**
- * One row of data
+ * One row of data.
  */
 export interface DataRow {
-  [Key: string]: DataValue;
+  [Key: string]: any;
 }
 
 /**
@@ -192,7 +190,7 @@ export class CartesianChart extends BaseD3ChartSVG {
    * If data are given, check if the column exists. Returns null if that's not the case.
    */
   getAxisColumnName(axisConfig: CartesianChartAxisConfig, data?: DataRow[]): string {
-    const axisColumn = axisConfig.axisColumn;
+    const axisColumn = axisConfig?.axisColumn;
     if (data && data.length > 0 && (data[0][axisColumn] === undefined || data[0][axisColumn] === null)) {
       return null;
     }
@@ -215,7 +213,18 @@ export class CartesianChart extends BaseD3ChartSVG {
   }
 
   /**
+   * Get a value and return a DataValue or null.
+   */
+  castToDataValue(data: any): DataValue {
+    if (typeof data === 'string' || typeof data === 'number' || data instanceof Date) {
+      return data as DataValue
+    }
+    return null;
+  }
+
+  /**
    * Set and draw the X axis using the config and the data.
+   * Type will be determined from data values and must be an Axis Type type.
    */
   setXAxis(data: DataRow[]): void {
     d3Select(`${this.getD3Selector()} svg .xaxis`).remove();
@@ -226,7 +235,7 @@ export class CartesianChart extends BaseD3ChartSVG {
       return;
     }
     const axisType = this.getDataType(data, axisConfig.tickLabelColumn || axisColumn);
-    this.xData = data.map(value => value[axisColumn]);
+    this.xData = data.map(value => this.castToDataValue(value[axisColumn]));
     this.xScale = this.getScale(this.xData, axisType, [0, drawableWidth]);
     if (!this.config_.xAxis.hideAxis) {
       this.drawXAxis(axisConfig.color || this.color, data);
@@ -235,6 +244,7 @@ export class CartesianChart extends BaseD3ChartSVG {
 
   /**
    * Set and draw the Y axis using the config and the data.
+   * Type will be determined from data values and must be an Axis Type type.
    */
   setYAxis(data: DataRow[]): void {
     d3Select(`${this.getD3Selector()} svg .yaxis`).remove();
@@ -245,7 +255,7 @@ export class CartesianChart extends BaseD3ChartSVG {
       return;
     }
     const axisType = this.getDataType(data, axisConfig.tickLabelColumn || axisColumn);
-    this.yData = data.map(value => value[axisColumn]);
+    this.yData = data.map(value => this.castToDataValue(value[axisColumn]));
     this.yScale = this.getScale(this.yData, axisType, [drawableHeight, 0]);
     if (!this.config_.yAxis.hideAxis) {
       this.drawYAxis(axisConfig.color || this.color, data);
@@ -254,6 +264,7 @@ export class CartesianChart extends BaseD3ChartSVG {
 
   /**
    * Set and draw the opposite Y axis using the config and the data.
+   * Type will be determined from data values and must be an Axis Type type.
    */
   setOppositeYAxis(data: DataRow[]): void {
     d3Select(`${this.getD3Selector()} svg .opposite-yaxis`).remove();
@@ -264,7 +275,7 @@ export class CartesianChart extends BaseD3ChartSVG {
       return;
     }
     const axisType = this.getDataType(data, axisConfig.tickLabelColumn || axisColumn);
-    this.oppositeYData = data.map(value => value[axisColumn]);
+    this.oppositeYData = data.map(value => this.castToDataValue(value[axisColumn]));
     this.oppositeYScale = this.getScale(this.oppositeYData, axisType, [drawableHeight, 0]);
     this.drawOppositeYAxis(axisConfig.color || this.color, data);
   }
