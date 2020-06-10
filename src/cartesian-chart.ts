@@ -217,7 +217,7 @@ export class CartesianChart extends BaseD3ChartSVG {
    */
   castToDataValue(data: any): DataValue {
     if (typeof data === 'string' || typeof data === 'number' || data instanceof Date) {
-      return data as DataValue
+      return data as DataValue;
     }
     return null;
   }
@@ -376,7 +376,7 @@ export class CartesianChart extends BaseD3ChartSVG {
   /*
    * Add line break on too long axis levels labels.
    */
-    wrapAxisLabels(text: any, width: number, x: number): void {
+  wrapAxisLabels(text: any, width: number, x: number): void {
     text.nodes().forEach((node) => {
       const textSelection = d3Select(node);
       const words = textSelection.text().replace('-', '- ').replace('.', '. ').split(/\s+/);
