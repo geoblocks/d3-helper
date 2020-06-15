@@ -179,9 +179,8 @@ export class CartesianChart extends BaseD3ChartSVG {
    * Remove, update the size, and draw the SVG again.
    */
   removeUpdateDrawSVG(): void {
-    const element = document.querySelector(this.getD3Selector());
     this.cleanCartesian();
-    this.updateSize(element);
+    this.updateSize();
     this.drawSVG();
   }
 
@@ -229,9 +228,13 @@ export class CartesianChart extends BaseD3ChartSVG {
   /**
    * Set and draw the X axis using the config and the data.
    * Type will be determined from data values and must be an Axis Type type.
+   * SVG element must be drawn before to call this method.
    */
   setXAxis(data: DataRow[]): void {
-    d3Select(`${this.getD3Selector()} svg .xaxis`).remove();
+    if (!this.assertChartExists) {
+      return;
+    }
+    this.chart.select('.xaxis').remove();
     const drawableWidth = this.getDrawableSize()[0];
     const axisConfig = this.config_.xAxis;
     const axisColumn = this.getAxisColumnName(axisConfig, data);
@@ -249,9 +252,13 @@ export class CartesianChart extends BaseD3ChartSVG {
   /**
    * Set and draw the Y axis using the config and the data.
    * Type will be determined from data values and must be an Axis Type type.
+   * SVG frame must be drawn before to call this method.
    */
   setYAxis(data: DataRow[]): void {
-    d3Select(`${this.getD3Selector()} svg .yaxis`).remove();
+    if (!this.assertChartExists) {
+      return;
+    }
+    this.chart.select('.yaxis').remove();
     const drawableHeight = this.getDrawableSize()[1];
     const axisConfig = this.config_.yAxis;
     const axisColumn = this.getAxisColumnName(axisConfig, data);
@@ -269,9 +276,13 @@ export class CartesianChart extends BaseD3ChartSVG {
   /**
    * Set and draw the opposite Y axis using the config and the data.
    * Type will be determined from data values and must be an Axis Type type.
+   * SVG frame must be drawn before to call this method.
    */
   setOppositeYAxis(data: DataRow[]): void {
-    d3Select(`${this.getD3Selector()} svg .opposite-yaxis`).remove();
+    if (!this.assertChartExists) {
+      return;
+    }
+    this.chart.select('.opposite-yaxis').remove();
     const drawableHeight = this.getDrawableSize()[1];
     const axisConfig = this.config_.oppositeYAxis;
     const axisColumn = this.getAxisColumnName(axisConfig, data);
@@ -286,8 +297,12 @@ export class CartesianChart extends BaseD3ChartSVG {
 
   /**
    * Draw a title at the center of the chart.
+   * SVG frame must be drawn before to call this method.
    */
   drawTitle(colors: number[], subTitle?: string): void {
+    if (!this.assertChartExists) {
+      return;
+    }
     const title = this.config_.title;
     this.svg.append('text')
       .attr('class', 'title')
@@ -309,8 +324,12 @@ export class CartesianChart extends BaseD3ChartSVG {
 
   /**
    * Draw the X axis in the chart of the svg.
+   * SVG frame must be drawn before to call this method.
    */
   drawXAxis(colors: number[], data?: DataRow[]): void {
+    if (!this.assertChartExists) {
+      return;
+    }
     const axis = this.setAxisTick(this.config_.xAxis, d3AxisBottom(this.xScale), data);
     const [drawableWidth, drawableHeight] = this.getDrawableSize();
     this.chart.append('g')
@@ -334,8 +353,12 @@ export class CartesianChart extends BaseD3ChartSVG {
 
   /**
    * Draw the X axis in the chart of the svg.
+   * SVG frame must be drawn before to call this method.
    */
   drawYAxis(colors: number[], data?: DataRow[]): void {
+    if (!this.assertChartExists) {
+      return;
+    }
     const axis = this.setAxisTick(this.config_.yAxis, d3AxisLeft(this.yScale), data);
     this.chart.append('g')
       .attr('transform', 'translate(0,0)')
@@ -356,8 +379,12 @@ export class CartesianChart extends BaseD3ChartSVG {
 
   /**
    * Draw the opposite Y axis in the chart of the svg.
+   * SVG frame must be drawn before to call this method.
    */
   drawOppositeYAxis(colors: number[], data?: DataRow[]): void {
+    if (!this.assertChartExists) {
+      return;
+    }
     const drawableWidth = this.getDrawableSize()[0];
     const axis = this.setAxisTick(this.config_.oppositeYAxis, d3AxisRight(this.oppositeYScale), data);
     this.chart.append('g')

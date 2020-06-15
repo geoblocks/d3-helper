@@ -44,7 +44,7 @@ export class BaseD3ChartSVG {
    * Specify a supplementary path to the already defined d3Selector.
    * That's useful for multiple generated charts elements.
    */
-  updateD3Selector (chartPath: string): void {
+  updateD3Selector(chartPath: string): void {
     this.d3Selector_ = `${chartPath} ${this.lastPartD3Selector_}`;
   }
 
@@ -69,16 +69,10 @@ export class BaseD3ChartSVG {
    * Update the size of the svg element.
    * The element svg must be redrawn after.
    */
-  updateSize(element: Element): void {
+  updateSize(): void {
+    const element = document.querySelector(this.d3Selector_);
     this.width = (element as HTMLElement).offsetWidth;
     this.height = (element as HTMLElement).offsetHeight;
-  }
-
-  /**
-   * Remove de SVG.
-   */
-  removeSVG(): void {
-    d3Select(`${this.d3Selector_} svg`).remove();
   }
 
   /**
@@ -95,5 +89,27 @@ export class BaseD3ChartSVG {
     this.chart = this.svg.append('g')
       .attr('transform', `translate(${this.margins.left}, ${this.margins.top})`)
       .attr('class', 'chart');
+  }
+
+  /**
+   * Remove de SVG.
+   */
+  removeSVG(): void {
+    d3Select(`${this.d3Selector_} svg`).remove();
+    this.chart = undefined;
+    this.svg = undefined;
+  }
+
+  /**
+   * Assert there is a svg and chart element.
+   * Write an error if there is not any.
+   * @return true if there is a chart. False otheriwse.
+   */
+  assertChartExists(): boolean {
+    if (this.svg && this.chart) {
+      return true;
+    }
+    console.error('No SVG element. Please call method drawSVG first');
+    return false;
   }
 }
