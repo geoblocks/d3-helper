@@ -191,7 +191,11 @@ export class CartesianChart extends BaseD3ChartSVG {
    */
   getAxisColumnName(axisConfig: CartesianChartAxisConfig, data?: DataRow[]): string {
     const axisColumn = axisConfig?.axisColumn;
-    if (data && data.length > 0 && (data[0][axisColumn] === undefined || data[0][axisColumn] === null)) {
+    // check if there exists at least one data point that is not null/undefined for this axis.
+    const dataExists = data?.find((elem) => {
+      return elem[axisColumn] !== undefined || elem[axisColumn] !== null;
+    });
+    if (!dataExists) {
       return null;
     }
     return axisColumn;
