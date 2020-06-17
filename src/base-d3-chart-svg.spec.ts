@@ -1,8 +1,18 @@
 import { BaseD3ChartSVG } from './base-d3-chart-svg';
 
-describe('base-d3-chart-svg functions', () => {
+describe('BaseD3ChartSvg calss functions', () => {
 
   let chart;
+
+  let logErrorFn;
+  const disableLogError = () => {
+    logErrorFn = console.error;
+    console.error = () => {};
+  };
+  const enableLogError = () => {
+    console.error = logErrorFn;
+  };
+
   beforeEach(() => {
     // Creare an element to draw the chart.
     document.body.innerHTML = '<div class="my-chart"></div>';
@@ -61,25 +71,27 @@ describe('base-d3-chart-svg functions', () => {
     expect(chart.svg).toBeUndefined();
     expect(chart.chart).toBeUndefined();
     chart.removeSVG(); // Don't fail if there is no chart
+    expect(chart.svg).toBeNull();
+    expect(chart.chart).toBeNull();
     chart.drawSVG();
     expect(chart.svg).toBeTruthy();
     expect(chart.chart).toBeTruthy();
     chart.removeSVG();
-    expect(chart.svg).toBeUndefined();
-    expect(chart.chart).toBeUndefined();
+    expect(chart.svg).toBeNull();
+    expect(chart.chart).toBeNull();
   });
 
   it('assertChartExists', () => {
-    // Silent console.error.
-    const errorFn = console.error;
-    console.error = () => {};
-    // Test
+    disableLogError(); // Silent console.error.
     expect(chart.assertChartExists()).toBeFalsy();
+    enableLogError(); // Enable console.error.
+
     chart.drawSVG();
     expect(chart.assertChartExists()).toBeTruthy();
+
     chart.removeSVG();
+    disableLogError(); // Silent console.error.
     expect(chart.assertChartExists()).toBeFalsy();
-    // Retablish console.error.
-    console.error = errorFn;
+    enableLogError(); // Enable console.error.
   });
 });

@@ -96,14 +96,14 @@ export class BaseD3ChartSVG {
    */
   removeSVG(): void {
     d3Select(`${this.d3Selector_} svg`).remove();
-    this.chart = undefined;
-    this.svg = undefined;
+    this.chart = null;
+    this.svg = null;
   }
 
   /**
    * Assert there is a svg and chart element.
    * Write an error if there is not any.
-   * @return true if there is a chart. False otheriwse.
+   * @return true if there is a chart. False otherwise.
    */
   assertChartExists(): boolean {
     if (this.svg && this.chart) {
