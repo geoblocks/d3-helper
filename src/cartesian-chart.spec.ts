@@ -48,12 +48,16 @@ describe('CartesianChart class functions', () => {
     expect(chart.getD3Selector()).toEqual('.my-chart');
     expect(chart.margins).toEqual({ top: 60, right: 80, bottom: 60, left: 80 });
     expect(chart.color).toEqual([100, 100, 100]);
+    expect(chart.fontSizeForAxis).toEqual('1rem');
+    expect(chart.fontSizeForTitle).toEqual('1.1rem');
 
     // More specific config
     Object.assign(config, {
       chartPath: 'div.cartesian',
       margins: { bottom: 0 },
       color: [0, 0, 255],
+      fontSizeForAxis: '0.8em',
+      fontSizeForTitle: '0.9em',
     });
     config.xAxis.hideAxis = true;
     config.yAxis.hideAxis = true;
@@ -61,6 +65,8 @@ describe('CartesianChart class functions', () => {
     expect(chart.getD3Selector()).toEqual('div.cartesian .my-chart');
     expect(chart.margins).toEqual({ top: 5, right: 5, bottom: 0, left: 5 });
     expect(chart.color).toEqual([0, 0, 255]);
+    expect(chart.fontSizeForAxis).toEqual('0.8em');
+    expect(chart.fontSizeForTitle).toEqual('0.9em');
 
     // With not hidden opposite y axis
     config.oppositeYAxis = { axisColumn: 'foo' };
@@ -180,7 +186,7 @@ describe('CartesianChart class functions', () => {
     expect(chart.xScale).toBeTruthy();
     expect(document.querySelector('.xaxis')).toBeNull();
 
-    // Set config with not existant column, no axis.
+    // Set config with not existent column, no axis.
     config.xAxis.hideAxis = false;
     config.xAxis.axisColumn = 'foo';
     chart.setXAxis(data);
@@ -222,7 +228,7 @@ describe('CartesianChart class functions', () => {
     expect(chart.yScale).toBeTruthy();
     expect(document.querySelector('.yaxis')).toBeNull();
 
-    // Set config with not existant column, no axis.
+    // Set config with not existent column, no axis.
     config.yAxis.hideAxis = false;
     config.yAxis.axisColumn = 'foo';
     chart.setYAxis(data);
@@ -265,7 +271,7 @@ describe('CartesianChart class functions', () => {
     expect(chart.oppositeYScale).toBeTruthy();
     expect(document.querySelector('.opposite-yaxis')).toBeNull();
 
-    // Set config with not existant column, no axis.
+    // Set config with not existent column, no axis.
     config.oppositeYAxis.hideAxis = false;
     config.oppositeYAxis.axisColumn = 'foo';
     chart.setOppositeYAxis(data);

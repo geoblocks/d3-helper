@@ -77,6 +77,11 @@ export interface CartesianChartConfig {
    */
   yAxis: CartesianChartAxisConfig;
   /**
+   * The exact html class that should contain the chart.
+   * This config is needed when there are two widgets on the same report containing the same chart.
+   */
+  chartPath?: string;
+  /**
    * Reference color to use on titles, axis titles, etc.
    */
   color?: number[];
@@ -85,18 +90,21 @@ export interface CartesianChartConfig {
   */
   domainAlwaysBuffered?: boolean;
   /**
-   * Secondary opposite Axis configuration. Will need a second dataset to setup the axis.
+   * Font size for axis. Default to 1rem.
    */
-  oppositeYAxis?: CartesianChartAxisConfig;
+  fontSizeForAxis?: string;
   /**
-   * The exact html class that should contain the chart.
-   * This config is needed when there are two widgets on the same report containing the same chart.
+   * Font size for title and subtitle. Default to 1.1rem.
    */
-  chartPath?: string;
+  fontSizeForTitle?: string;
   /**
    * Margins are used to display axis. If an axis is hidden, you can but probably won't update the margins.
    */
   margins?: Margins;
+  /**
+   * Secondary opposite Axis configuration. Will need a second dataset to setup the axis.
+   */
+  oppositeYAxis?: CartesianChartAxisConfig;
   /**
    * An optional title.
    */
@@ -111,6 +119,8 @@ export class CartesianChart extends BaseD3ChartSVG {
   private config_: CartesianChartConfig;
 
   color: number[];
+  fontSizeForAxis: string;
+  fontSizeForTitle: string;
 
   xData: DataValue[];
   yData: DataValue[];
@@ -123,6 +133,8 @@ export class CartesianChart extends BaseD3ChartSVG {
   constructor(d3Selector: string) {
     super(d3Selector);
     this.color = [100, 100, 100];
+    this.fontSizeForAxis = '1rem';
+    this.fontSizeForTitle = '1.1rem';
   }
 
   /**
@@ -159,6 +171,14 @@ export class CartesianChart extends BaseD3ChartSVG {
 
     if (this.config_.color) {
       this.color = this.config_.color;
+    }
+
+    if (this.config_.fontSizeForAxis) {
+      this.fontSizeForAxis = this.config_.fontSizeForAxis;
+    }
+
+    if (this.config_.fontSizeForTitle) {
+      this.fontSizeForTitle = this.config_.fontSizeForTitle;
     }
   }
 
@@ -341,7 +361,7 @@ export class CartesianChart extends BaseD3ChartSVG {
       .attr('class', 'title')
       .attr('x', this.width / 2)
       .attr('y', this.margins.top / 2)
-      .attr('font-size', '1.2rem')
+      .attr('font-size', this.fontSizeForTitle)
       .attr('fill', `rgb(${colors.join(',')})`)
       .style('text-anchor', 'middle')
       .text(title);
@@ -353,7 +373,7 @@ export class CartesianChart extends BaseD3ChartSVG {
       .attr('class', 'subtitle')
       .attr('x', this.width / 2)
       .attr('y', this.margins.top / 2)
-      .attr('font-size', '1.2rem')
+      .attr('font-size', this.fontSizeForTitle)
       .attr('fill', `rgb(${colors.join(',')})`)
       .style('text-anchor', 'middle')
       .text(subTitle);
@@ -385,11 +405,11 @@ export class CartesianChart extends BaseD3ChartSVG {
       .attr('y', this.margins.bottom - 5)
       .attr('fill', `rgb(${colors.join(',')})`)
       .style('text-anchor', 'middle')
-      .style('font-size', '1.1em')
+      .style('font-size', this.fontSizeForAxis)
       .text(this.config_.xAxis.label);
 
     this.chart.selectAll('.xaxis .tick text')
-      .call(this.wrapAxisLabels, this.margins.bottom - 15, 0)
+      .call(this.wrapAxisLabels.bind(this), this.margins.bottom - 15, 0)
       .attr('transform', 'translate(0, 8) rotate(-36)')
       .attr('text-anchor', 'end');
   }
@@ -419,11 +439,11 @@ export class CartesianChart extends BaseD3ChartSVG {
       .attr('y', -10)
       .attr('fill', `rgb(${colors.join(',')})`)
       .style('text-anchor', 'end')
-      .style('font-size', '1.1em')
+      .style('font-size', this.fontSizeForAxis)
       .text(this.config_.yAxis.label);
 
     this.chart.selectAll('.yaxis .tick text')
-      .call(this.wrapAxisLabels, this.margins.left - 15, -10);
+      .call(this.wrapAxisLabels.bind(this), this.margins.left - 15, -10);
   }
 
   /**
@@ -452,11 +472,11 @@ export class CartesianChart extends BaseD3ChartSVG {
       .attr('y', -10)
       .attr('fill', `rgb(${colors.join(',')})`)
       .style('text-anchor', 'start')
-      .style('font-size', '1.1em')
+      .style('font-size', this.fontSizeForAxis)
       .text(this.config_.oppositeYAxis.label);
 
     this.chart.selectAll('.opposite-yaxis .tick text')
-      .call(this.wrapAxisLabels, this.margins.right - 15, 10);
+      .call(this.wrapAxisLabels.bind(this), this.margins.right - 15, 10);
   }
 
   /**
@@ -466,16 +486,19 @@ export class CartesianChart extends BaseD3ChartSVG {
    * @param x the x value to shift the element (to avoid overlaping the axis).
    */
   wrapAxisLabels(text: any, width: number, x: number): void {
+    const fontUnitGroup = this.fontSizeForAxis.match(/[a-zA-Z]+$/);
+    const fontUnit = fontUnitGroup ? fontUnitGroup[0] : 'rem';
+    const fontSize = fontUnitGroup ? parseFloat(this.fontSizeForAxis.substring(0, fontUnitGroup.index)) : 1.1;
     text.nodes().forEach((node) => {
       const textSelection = d3Select(node as SVGTextContentElement);
       const words = textSelection.text().replace('-', '- ').replace('.', '. ').split(/\s+/);
       const mustBreakWords = node.getComputedTextLength() > width;
       const maxNumberOfLines = 2;
-      const lineHeight = 1.1; // ems
+      const lineHeight = fontSize;
       const y = mustBreakWords ? -8 : 0;
       const dy = parseFloat(textSelection.attr('dy'));
 
-      let tspan = textSelection.text(null).append('tspan').attr('x', x).attr('y', y).attr('dy', `${dy}em`);
+      let tspan = textSelection.text(null).append('tspan').attr('x', x).attr('y', y).attr('dy', `${dy}${fontUnit}`);
       let line = [];
       let lineNumber = 0;
 
@@ -495,7 +518,7 @@ export class CartesianChart extends BaseD3ChartSVG {
             // ... and re-append the line with previous words. Then add a new tspan with the removed word.
             tspan.text(line.join(' '));
             line = [word];
-            const newLineDy = `${lineNumber * lineHeight + dy}em`;
+            const newLineDy = `${lineNumber * lineHeight + dy}${fontUnit}`;
             tspan = textSelection.append('tspan').attr('x', x).attr('y', y).attr('dy', newLineDy).text(word);
           } else {
             // If that was the last authorised line, add an ellipsis as last word.

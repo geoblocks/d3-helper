@@ -3,6 +3,7 @@ import { CartesianChart, AxisType } from '../../src/index';
 
 const configOne = {
   color: [0, 100, 50],
+  fontSizeForAxis: '1rem',
   title: 'Cartesian demo one',
   chartPath: '.one',
   xAxis: {
@@ -16,6 +17,7 @@ const configOne = {
 };
 
 const configTwo = {
+  fontSizeForTitle: '1.3rem',
   color: [200, 100, 0],
   title: 'Cartesian demo two',
   chartPath: '.two',
