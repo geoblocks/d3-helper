@@ -2,13 +2,13 @@
 
 Helper functions to create charts based on [d3](https://github.com/d3/d3).
 
-This library provides some classes and function for common operations with the d3 library.
-It let you able to manage your chart as you want.
+This library provides some classes and functions for common operations with the d3 library.
+It let you able to manage your charts as you want.
 
 ## Use the code in a project.
 
-Simple use it through [npm @geoblocks/d3-helper](https://www.npmjs.com/package/@geoblocks/d3-helper).
-See the examples for more informations on how to set the basics of your chart.
+Simply use it through [npm @geoblocks/d3-helper](https://www.npmjs.com/package/@geoblocks/d3-helper).
+See the examples for more informations on how to set the basics of your charts.
 
 ### Overview
 
@@ -19,8 +19,8 @@ Class that provides functions to draw, clean and manage a SVG with a chart insid
 #### CartesianChart
 
 Extends BaseD3ChartSVG.
-Class that provides functions to manage cartesian charts (bars, scatterplots, lines...)
-Especially manage the axis of cartesian charts.
+Class that provides functions to manage cartesian charts (for bars, scatterplots, lines...)
+Mainly manage the axis of cartesian charts.
 Supported axis data types are: Date, number and text.
 
 ### Supported browsers
@@ -54,4 +54,3 @@ npm run build && npm publish && git push --tags origin master
 ## Upcoming (probably):
 
 * Tooltips helpers for data.
-* Tests.
