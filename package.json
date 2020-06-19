@@ -1,6 +1,6 @@
 {
   "name": "@geoblocks/d3-helper",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "d3 helper classes",
   "license": "BSD-3-Clause",
   "author": "Camptocamp SA <info@camptocamp.com> (https://www.camptocamp.com)",
