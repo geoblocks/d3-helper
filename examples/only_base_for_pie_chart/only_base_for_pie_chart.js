@@ -2,9 +2,6 @@ import { arc as d3Arc, pie as d3Pie } from 'd3-shape';
 import { data } from '../data';
 import { BaseD3ChartSVG } from '../../src/index';
 
-const config = {
-};
-
 /**
  * Defined list of hex colors (used in pie-chart.).
  */
@@ -18,7 +15,7 @@ const HEX_COLORS = [
 
 data.splice(0, 94); // Less data for a nicer chart.
 
-class LineChart extends BaseD3ChartSVG {
+class PieChart extends BaseD3ChartSVG {
   constructor() {
     super('.chart');
     this.pie_ = d3Pie()
@@ -28,7 +25,7 @@ class LineChart extends BaseD3ChartSVG {
 
   draw() {
     // Use BaseD3ChartSVG to draw the svg.
-    this.updateSize(document.querySelector(this.getD3Selector()));
+    this.updateSize();
     // Move pie-chart to the center of the svg.
     this.setMargins({ top: this.height / 2, left: this.width / 2 });
     // Draw the svg.
@@ -56,5 +53,5 @@ class LineChart extends BaseD3ChartSVG {
   }
 }
 
-const chart = new LineChart();
+const chart = new PieChart();
 chart.draw();

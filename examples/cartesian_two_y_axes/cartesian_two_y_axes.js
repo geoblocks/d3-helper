@@ -3,8 +3,6 @@ import { transition } from 'd3-transition';
 import { data as rawData } from '../data';
 import { CartesianChart, AxisType } from '../../src/index';
 
-// -> http://bl.ocks.org/methodofaction/4063326
-
 const config = {
   color: [25, 25, 150],
   xAxis: {
