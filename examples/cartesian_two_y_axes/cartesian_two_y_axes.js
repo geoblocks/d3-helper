@@ -23,7 +23,7 @@ const config = {
 let data = rawData.slice(40, 50); // Less data for a nicer chart.
 data = data.map((d) => { //use date object.
   const date = d.date.split('/');
-  d.date = new Date(`${date[1]}-${date[0]}-${date[2]}`); // Need mm-dd-yyyy, not dd-mm-yyyy.
+  d.date = new Date(`${date[2]}-${date[1]}-${date[0]}`); // Need yyyy-mm-dd, not dd-mm-yyyy.
   return d;
 });
 data.sort((d1, d2) => d1.date > d2.date ? 1 : -1); // Sort per date.
