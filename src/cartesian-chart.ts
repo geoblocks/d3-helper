@@ -486,19 +486,14 @@ export class CartesianChart extends BaseD3ChartSVG {
    * @param x the x value to shift the element (to avoid overlaping the axis).
    */
   wrapAxisLabels(text: any, width: number, x: number): void {
-    const fontUnitGroup = this.fontSizeForAxis.match(/[a-zA-Z]+$/);
-    const fontUnit = fontUnitGroup ? fontUnitGroup[0] : 'rem';
-    const fontSize = fontUnitGroup ? parseFloat(this.fontSizeForAxis.substring(0, fontUnitGroup.index)) : 1.1;
     text.nodes().forEach((node) => {
       const textSelection = d3Select(node as SVGTextContentElement);
       const words = textSelection.text().replace('-', '- ').replace('.', '. ').split(/\s+/);
       const mustBreakWords = node.getComputedTextLength() > width;
       const maxNumberOfLines = 2;
-      const lineHeight = fontSize;
       const y = mustBreakWords ? -8 : 0;
-      const dy = parseFloat(textSelection.attr('dy'));
 
-      let tspan = textSelection.text(null).append('tspan').attr('x', x).attr('y', y).attr('dy', `${dy}${fontUnit}`);
+      let tspan = textSelection.text(null).append('tspan').attr('x', x).attr('y', y).attr('dy', 0);
       let line = [];
       let lineNumber = 0;
 
@@ -518,8 +513,8 @@ export class CartesianChart extends BaseD3ChartSVG {
             // ... and re-append the line with previous words. Then add a new tspan with the removed word.
             tspan.text(line.join(' '));
             line = [word];
-            const newLineDy = `${lineNumber * lineHeight + dy}${fontUnit}`;
-            tspan = textSelection.append('tspan').attr('x', x).attr('y', y).attr('dy', newLineDy).text(word);
+            const lineHeight = lineNumber * 10 + 2;
+            tspan = textSelection.append('tspan').attr('x', x).attr('y', y).attr('dy', lineHeight).text(word);
           } else {
             // If that was the last authorised line, add an ellipsis as last word.
             line.push('…');
