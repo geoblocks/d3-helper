@@ -409,7 +409,7 @@ export class CartesianChart extends BaseD3ChartSVG {
       .text(this.config_.xAxis.label);
 
     this.chart.selectAll('.xaxis .tick text')
-      .call(this.wrapAxisLabels.bind(this), this.margins.bottom - 15, 0)
+      .call(this.wrapAxisLabels.bind(this), this.margins.bottom - 15, 0, 6)
       .attr('transform', 'translate(0, 8) rotate(-36)')
       .attr('text-anchor', 'end');
   }
@@ -443,7 +443,7 @@ export class CartesianChart extends BaseD3ChartSVG {
       .text(this.config_.yAxis.label);
 
     this.chart.selectAll('.yaxis .tick text')
-      .call(this.wrapAxisLabels.bind(this), this.margins.left - 15, -10);
+      .call(this.wrapAxisLabels.bind(this), this.margins.left - 15, -10, 3);
   }
 
   /**
@@ -476,7 +476,7 @@ export class CartesianChart extends BaseD3ChartSVG {
       .text(this.config_.oppositeYAxis.label);
 
     this.chart.selectAll('.opposite-yaxis .tick text')
-      .call(this.wrapAxisLabels.bind(this), this.margins.right - 15, 10);
+      .call(this.wrapAxisLabels.bind(this), this.margins.right - 15, 10, 3);
   }
 
   /**
@@ -484,16 +484,17 @@ export class CartesianChart extends BaseD3ChartSVG {
    * @param text A d3 text element to wrap.
    * @param width Max width available for the text.
    * @param x the x value to shift the element (to avoid overlaping the axis).
+   * @param y the y value to shift the element (to avoid overlaping the axis).
    */
-  wrapAxisLabels(text: any, width: number, x: number): void {
+  wrapAxisLabels(text: any, width: number, x: number, y: number): void {
     text.nodes().forEach((node) => {
       const textSelection = d3Select(node as SVGTextContentElement);
       const words = textSelection.text().replace('-', '- ').replace('.', '. ').split(/\s+/);
       const mustBreakWords = node.getComputedTextLength() > width;
       const maxNumberOfLines = 2;
-      const y = mustBreakWords ? -8 : 0;
+      const dy = mustBreakWords ? -8 : 0;
 
-      let tspan = textSelection.text(null).append('tspan').attr('x', x).attr('y', y).attr('dy', 0);
+      let tspan = textSelection.text(null).append('tspan').attr('x', x).attr('y', y).attr('dy', dy);
       let line = [];
       let lineNumber = 0;
 
@@ -513,7 +514,7 @@ export class CartesianChart extends BaseD3ChartSVG {
             // ... and re-append the line with previous words. Then add a new tspan with the removed word.
             tspan.text(line.join(' '));
             line = [word];
-            const lineHeight = lineNumber * 10 + 2;
+            const lineHeight = lineNumber * 10 + dy;
             tspan = textSelection.append('tspan').attr('x', x).attr('y', y).attr('dy', lineHeight).text(word);
           } else {
             // If that was the last authorised line, add an ellipsis as last word.
