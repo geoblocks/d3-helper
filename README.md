@@ -3,7 +3,7 @@
 Helper functions to create charts based on [d3](https://github.com/d3/d3).
 
 This library provides some classes and functions for common operations with the d3 library.
-It let you able to manage your charts as you want.
+It let you manage charts as you want.
 
 ## Use the code in a project.
 
