@@ -47,14 +47,15 @@ class hBarChart extends CartesianChart {
     const config = this.getConfig();
     // Use d3 helper functions.
     this.removeUpdateDrawSVG();
-    this.setXAxis(data);
-    this.setYAxis(data);
+    this.data = data;
+    this.setXAxis();
+    this.setYAxis();
     this.drawTitle(config.color);
 
     // Draw a custom line chart.
     // Draw a custom  horizontal-bars chart
     const barGroups = this.chart.selectAll()
-      .data(this.yData)
+      .data(this.data)
       .enter()
       .append('g');
     
@@ -63,9 +64,9 @@ class hBarChart extends CartesianChart {
       .append('rect')
       .attr('class', 'bar')
       .attr('x', 0)
-      .attr('y', d => this.yScale(d) - barHeight / 2)
+      .attr('y', d => this.yScale(d[this.getYColumnName()]) - barHeight / 2)
       .attr('height', barHeight)
-      .attr('width', (d, i) => this.xScale(this.xData[i]))
+      .attr('width', d => this.xScale(d[this.getXColumnName()]))
       .attr('fill', `rgb(${config.color.join(',')})`);
   }
 }

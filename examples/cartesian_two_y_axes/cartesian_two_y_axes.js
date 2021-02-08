@@ -37,22 +37,23 @@ class lineBarChart extends CartesianChart {
     // Use d3 helper functions.
     this.setConfig(config);
     this.removeUpdateDrawSVG();
-    this.setXAxis(data);
-    this.setYAxis(data);
+    this.data = data;
+    this.setXAxis();
+    this.setYAxis();
     this.setOppositeYAxis(data);
 
     // Draw a custom vertical bars chart.
     const barGroups = this.chart.selectAll()
-      .data(this.yData)
+      .data(this.data)
       .enter()
       .append('g');
 
     const [drawWidth, drawHeight] = this.getDrawableSize();
-    const barWidth = drawWidth / 4 / this.yData.length;
+    const barWidth = drawWidth / 4 / this.data.length;
     barGroups
       .append('rect')
       .attr('class', 'bar')
-      .attr('x', (d, i) => this.xScale(this.xData[i]) - barWidth / 2)
+      .attr('x', d => this.xScale(d[this.getXColumnName()]) - barWidth / 2)
       .attr('y', drawHeight)
       .attr('height',  0)
       .attr('width', barWidth)
@@ -60,19 +61,19 @@ class lineBarChart extends CartesianChart {
       // Add a custom transition on two attributes to have growing vertical bars.
       .transition()
       .duration(1500)
-      .attr('y', d => this.yScale(d))
-      .attr('height', d => drawHeight - this.yScale(d));
+      .attr('y', d => this.yScale(d[this.getYColumnName()]))
+      .attr('height', d => drawHeight - this.yScale(d[this.getYColumnName()]));
 
     // Draw a custom line chart on x and opposit y axis.
     const lineFunction = d3Line()
       .curve(d3CurveMonotoneX)
-      .x((d, i) => this.xScale(this.xData[i]))
-      .y(d => this.oppositeYScale(d));
+      .x(d => this.xScale(d[this.getXColumnName()]))
+      .y(d => this.oppositeYScale(d[this.getOppositeYColumnName()]));
 
     const line = this.chart
       .append('path')
       .attr('class', 'line')
-      .attr('d', lineFunction(this.oppositeYData))
+      .attr('d', lineFunction(this.data))
       .attr('stroke', `rgb(${config.oppositeYAxis.color.join(',')})`)
       .attr('stroke-width', '2')
       .attr('fill', 'none');

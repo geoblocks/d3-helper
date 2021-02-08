@@ -27,19 +27,20 @@ class LineChart extends CartesianChart {
     this.useDataLabelAsDefaultForAxis('xAxis');
     this.useDataLabelAsDefaultForAxis('yAxis');
     // Draw axis using CartesianChart.
-    this.setXAxis(data);
-    this.setYAxis(data);
+    this.data = data;
+    this.setXAxis();
+    this.setYAxis();
 
     // Draw a custom line chart.
     const lineFunction = d3Line()
       .curve(d3CurveMonotoneX)
-      .x((d, i) => this.xScale(this.xData[i]))
-      .y(d => this.yScale(d));
+      .x(d => this.xScale(d[this.getXColumnName()]))
+      .y(d => this.yScale(d[this.getYColumnName()]));
 
     this.chart
       .append('path')
       .attr('class', 'line')
-      .attr('d', lineFunction(this.yData))
+      .attr('d', lineFunction(this.data))
       .attr('stroke', `rgb(${this.color.join(',')})`)
       .attr('stroke-width', '1')
       .attr('fill', 'none');
