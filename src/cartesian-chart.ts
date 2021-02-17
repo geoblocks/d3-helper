@@ -231,28 +231,28 @@ export class CartesianChart extends BaseD3ChartSVG {
   }
 
   /**
-   * Returns the x axisColumn from the config.
+   * Returns name of the x axisColumn from the config.
    */
   getXColumnName(): string {
     return this.config_?.xAxis?.axisColumn;
   }
 
   /**
-   * Returns the x axisColumn from the config.
+   * Returns name of the y axisColumn from the config.
    */
   getYColumnName(): string {
     return this.config_?.yAxis?.axisColumn;
   }
 
   /**
-   * Returns the opposite y axisColumn from the config.
+   * Returns name of the opposite y axisColumn from the config.
    */
   getOppositeYColumnName(): string {
     return this.config_?.oppositeYAxis?.axisColumn;
   }
 
   /**
-   * Returns the axisColumn after a check if data exist for this axis column key.
+   * Returns the axisColumn name after a check if data exist for this axis column key.
    */
   getCheckedAxisColumnName(axisConfig: CartesianChartAxisConfig, data: DataRow[]): string {
     const axisColumn = axisConfig?.axisColumn;
