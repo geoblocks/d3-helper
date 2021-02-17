@@ -4,7 +4,7 @@ describe('CartesianChart class functions', () => {
 
   let chart;
   let config;
-  const data = [
+  const dataset = [
     { elevation: null, obj: 'rock in the sea', date: null },
     { elevation: 20.5, obj: null, date: new Date('01-31-2019') },
     { elevation: 100, obj: 'tree', date: new Date('03-01-2015') },
@@ -98,14 +98,12 @@ describe('CartesianChart class functions', () => {
     // Set up
     chart.drawSVG();
     expect(chart.svg).toBeTruthy();
-    expect(chart.xData).toBeUndefined();
+    expect(chart.dataset).toBeUndefined();
 
     // Clean
     chart.cleanCartesian();
     expect(chart.svg).toBeNull();
-    expect(chart.xData).toBeNull();
-    expect(chart.yData).toBeNull();
-    expect(chart.oppositeYData).toBeNull();
+    expect(chart.dataset).toBeNull();
     expect(chart.xScale).toBeNull();
     expect(chart.yScale).toBeNull();
     expect(chart.oppositeYScale).toBeNull();
@@ -113,32 +111,77 @@ describe('CartesianChart class functions', () => {
 
   it('removeUpdateDrawSVG', () => {
     // Base state
-    expect(chart.yData).toBeUndefined();
+    expect(chart.dataset).toBeUndefined();
     expect(chart.svg).toBeUndefined();
     expect(chart.width).toEqual(250);
 
     // RemoveUpdateDrawSVG
     chart.removeUpdateDrawSVG();
-    expect(chart.yData).toBeNull();
+    expect(chart.dataset).toBeNull();
     expect(chart.svg).toBeTruthy();
     expect(chart.width).toEqual(400);
   });
 
-  it('getAxisColumnName', () => {
-    expect(chart.getAxisColumnName(null, data)).toBeNull();
-    expect(chart.getAxisColumnName(config.xAxis, [])).toBeNull();
-    expect(chart.getAxisColumnName(config.xAxis, data)).toEqual('obj');
-    expect(chart.getAxisColumnName(config.yAxis, data)).toEqual('elevation');
-    expect(chart.getAxisColumnName(config.oppositeYAxis, data)).toBeNull();
+  it('getXColumnName', () => {
+    expect(chart.getXColumnName()).toBeUndefined();
+    chart.setConfig(config);
+    expect(chart.getXColumnName()).toEqual('obj');
+  });
+
+  it('getYColumnName', () => {
+    expect(chart.getYColumnName()).toBeUndefined();
+    chart.setConfig(config);
+    expect(chart.getYColumnName()).toEqual('elevation');
+  });
+
+  it('getOppositeYColumnName', () => {
+    expect(chart.getOppositeYColumnName()).toBeUndefined();
+    config.oppositeYAxis = { axisColumn: 'date' };
+    chart.setConfig(config);
+    expect(chart.getOppositeYColumnName()).toEqual('date');
+  });
+
+  it('getXScaleValue', () => {
+    chart.setConfig(config);
+    chart.removeUpdateDrawSVG();
+    chart.dataset = dataset;
+    chart.setXAxis();
+    expect(chart.getXScaleValue(dataset[0])).toBeGreaterThan(0);
+  });
+
+  it('getYScaleValue', () => {
+    chart.setConfig(config);
+    chart.removeUpdateDrawSVG();
+    chart.dataset = dataset;
+    chart.setYAxis();
+    expect(chart.getYScaleValue(dataset[0])).toBeGreaterThan(0);
+  });
+
+  it('getOppositeYScaleValue', () => {
+    // Set axis and get value again.
+    config.oppositeYAxis = { axisColumn: 'date' };
+    chart.setConfig(config);
+    chart.removeUpdateDrawSVG();
+    chart.dataset = dataset;
+    chart.setOppositeYAxis();
+    expect(chart.getOppositeYScaleValue(dataset[0])).toBeGreaterThan(0);
+  });
+
+  it('getCheckedAxisColumnName', () => {
+    expect(chart.getCheckedAxisColumnName(null, dataset)).toBeNull();
+    expect(chart.getCheckedAxisColumnName(config.xAxis, [])).toBeNull();
+    expect(chart.getCheckedAxisColumnName(config.xAxis, dataset)).toEqual('obj');
+    expect(chart.getCheckedAxisColumnName(config.yAxis, dataset)).toEqual('elevation');
+    expect(chart.getCheckedAxisColumnName(config.oppositeYAxis, dataset)).toBeNull();
   });
 
   it('getDataType', () => {
     disableLogError(); // Silent console.error.
-    expect(chart.getDataType(data, '')).toEqual(AxisType.TEXT);
+    expect(chart.getDataType(dataset, '')).toEqual(AxisType.TEXT);
     enableLogError(); // Enable console.error.
-    expect(chart.getDataType(data, 'obj')).toEqual(AxisType.TEXT);
-    expect(chart.getDataType(data, 'elevation')).toEqual(AxisType.NUMBER);
-    expect(chart.getDataType(data, 'date')).toEqual(AxisType.DATE);
+    expect(chart.getDataType(dataset, 'obj')).toEqual(AxisType.TEXT);
+    expect(chart.getDataType(dataset, 'elevation')).toEqual(AxisType.NUMBER);
+    expect(chart.getDataType(dataset, 'date')).toEqual(AxisType.DATE);
   });
 
   it('castToDataValue', () => {
@@ -154,128 +197,132 @@ describe('CartesianChart class functions', () => {
   });
 
   it('setXAxis', () => {
+    // No svg, no draw.
     disableLogError(); // Silent console.error.
-    chart.setXAxis(data);
+    chart.setXAxis();
     enableLogError(); // Enable console.error.
-    expect(chart.xData).toBeNull();
     expect(document.querySelector('.xaxis')).toBeNull();
 
     // Draw svg, not axis: no axis yet.
     chart.removeUpdateDrawSVG();
-    expect(chart.xData).toBeNull();
     expect(document.querySelector('.xaxis')).toBeNull();
 
-    // No config, no axis
+    // No config nor dataset, no axis.
     disableLogError(); // Silent console.error.
-    chart.setXAxis(data);
+    chart.setXAxis();
     enableLogError(); // Enable console.error.
-    expect(chart.xData).toBeNull();
     expect(document.querySelector('.xaxis')).toBeNull();
 
-    // Set config, draw axis.
+    // Config but no dataset, no axis.
     chart.setConfig(config);
-    chart.setXAxis(data);
-    expect(chart.xData).toBeTruthy();
+    disableLogError(); // Silent console.error.
+    chart.setXAxis();
+    enableLogError(); // Enable console.error.
+    expect(document.querySelector('.xaxis')).toBeNull();
+
+    // Set dataset, draw axis.
+    chart.dataset = dataset;
+    chart.setXAxis();
     expect(chart.xScale).toBeTruthy();
     expect(document.querySelectorAll('.xaxis').length).toEqual(1);
 
     // Set config with hidden column, no axis element but axis is set.
     config.xAxis.hideAxis = true;
-    chart.setXAxis(data);
-    expect(chart.xData).toBeTruthy();
+    chart.setXAxis();
     expect(chart.xScale).toBeTruthy();
     expect(document.querySelector('.xaxis')).toBeNull();
 
     // Set config with not existent column, no axis.
     config.xAxis.hideAxis = false;
     config.xAxis.axisColumn = 'foo';
-    chart.setXAxis(data);
-    expect(chart.xData).toBeNull();
+    chart.setXAxis();
     expect(document.querySelector('.xaxis')).toBeNull();
   });
 
   it('setYAxis', () => {
     // No svg, no draw.
     disableLogError(); // Silent console.error.
-    chart.setYAxis(data);
+    chart.setYAxis();
     enableLogError(); // Enable console.error.
-    expect(chart.yData).toBeNull();
     expect(document.querySelector('.yaxis')).toBeNull();
 
     // Draw svg, not axis: no axis yet.
     chart.removeUpdateDrawSVG();
-    expect(chart.yData).toBeNull();
     expect(document.querySelector('.yaxis')).toBeNull();
 
-    // No config, no axis
+    // No config nor dataset, no axis.
     disableLogError(); // Silent console.error.
-    chart.setYAxis(data);
+    chart.setYAxis();
     enableLogError(); // Enable console.error.
-    expect(chart.yData).toBeNull();
     expect(document.querySelector('.yaxis')).toBeNull();
 
-    // Set config, draw axis.
+    // Config but no dataset, no axis.
     chart.setConfig(config);
-    chart.setYAxis(data);
-    expect(chart.yData).toBeTruthy();
+    disableLogError(); // Silent console.error.
+    chart.setYAxis();
+    enableLogError(); // Enable console.error.
+    expect(document.querySelector('.yaxis')).toBeNull();
+
+    // Set dataset, draw axis.
+    chart.dataset = dataset;
+    chart.setYAxis();
     expect(chart.yScale).toBeTruthy();
     expect(document.querySelectorAll('.yaxis').length).toEqual(1);
 
     // Set config with hidden column, no axis element but axis is set.
     config.yAxis.hideAxis = true;
-    chart.setYAxis(data);
-    expect(chart.yData).toBeTruthy();
+    chart.setYAxis();
     expect(chart.yScale).toBeTruthy();
     expect(document.querySelector('.yaxis')).toBeNull();
 
     // Set config with not existent column, no axis.
     config.yAxis.hideAxis = false;
     config.yAxis.axisColumn = 'foo';
-    chart.setYAxis(data);
-    expect(chart.yData).toBeNull();
+    chart.setYAxis();
     expect(document.querySelector('.yaxis')).toBeNull();
   });
 
   it('setOppositeYAxis', () => {
     // No svg, no draw.
     disableLogError(); // Silent console.error.
-    chart.setOppositeYAxis(data);
+    chart.setOppositeYAxis();
     enableLogError(); // Enable console.error.
-    expect(chart.oppositeYData).toBeNull();
     expect(document.querySelector('.opposite-yaxis')).toBeNull();
 
     // Draw svg, not axis: no axis yet.
     chart.removeUpdateDrawSVG();
-    expect(chart.oppositeYData).toBeNull();
     expect(document.querySelector('.opposite-yaxis')).toBeNull();
 
-    // No config, no axis
+    // No config nor dataset, no axis.
     disableLogError(); // Silent console.error.
-    chart.setOppositeYAxis(data);
+    chart.setOppositeYAxis();
     enableLogError(); // Enable console.error.
-    expect(chart.oppositeYData).toBeNull();
     expect(document.querySelector('.opposite-yaxis')).toBeNull();
 
-    // Set config, draw axis.
+    // Config but no dataset, no axis.
     config.oppositeYAxis = { axisColumn: 'date' };
     chart.setConfig(config);
-    chart.setOppositeYAxis(data);
-    expect(chart.oppositeYData).toBeTruthy();
+    disableLogError(); // Silent console.error.
+    chart.setOppositeYAxis();
+    enableLogError(); // Enable console.error.
+    expect(document.querySelector('.opposite-yaxis')).toBeNull();
+
+    // Set dataset, draw axis.
+    chart.dataset = dataset;
+    chart.setOppositeYAxis();
     expect(chart.oppositeYScale).toBeTruthy();
     expect(document.querySelectorAll('.opposite-yaxis').length).toEqual(1);
 
     // Set config with hidden column, no axis element but axis is set.
     config.oppositeYAxis.hideAxis = true;
-    chart.setOppositeYAxis(data);
-    expect(chart.oppositeYData).toBeTruthy();
+    chart.setOppositeYAxis();
     expect(chart.oppositeYScale).toBeTruthy();
     expect(document.querySelector('.opposite-yaxis')).toBeNull();
 
     // Set config with not existent column, no axis.
     config.oppositeYAxis.hideAxis = false;
     config.oppositeYAxis.axisColumn = 'foo';
-    chart.setOppositeYAxis(data);
-    expect(chart.oppositeYData).toBeNull();
+    chart.setOppositeYAxis();
     expect(document.querySelector('.opposite-yaxis')).toBeNull();
   });
 
@@ -312,7 +359,7 @@ describe('CartesianChart class functions', () => {
   it('drawXAxis', () => {
     // No svg, no draw.
     disableLogError(); // Silent console.error.
-    chart.drawXAxis(chart.color, data);
+    chart.drawXAxis(chart.color, dataset);
     enableLogError(); // Enable console.error.
     expect(document.querySelector('.xaxis')).toBeNull();
 
@@ -322,29 +369,28 @@ describe('CartesianChart class functions', () => {
 
     // No config, no axis
     disableLogError(); // Silent console.error.
-    chart.drawXAxis(chart.color, data);
+    chart.drawXAxis(chart.color, dataset);
     enableLogError(); // Enable console.error.
     expect(document.querySelector('.xaxis')).toBeNull();
 
     // No scale, no axis
     chart.setConfig(config);
     disableLogError(); // Silent console.error.
-    chart.drawXAxis(chart.color, data);
+    chart.drawXAxis(chart.color, dataset);
     enableLogError(); // Enable console.error.
     expect(document.querySelector('.xaxis')).toBeNull();
 
     // Draw axis (twice, must result only one xaxis).
-    const xData = data.map(dataRow => dataRow[config.xAxis.axisColumn]);
-    chart.xScale = chart.getScale(xData, AxisType.TEXT, [0, 100]);
-    chart.drawXAxis(chart.color, data);
-    chart.drawXAxis(chart.color, data);
+    chart.xScale = chart.getScale(dataset, chart.getXColumnName(), AxisType.TEXT, [0, 100]);
+    chart.drawXAxis(chart.color, dataset);
+    chart.drawXAxis(chart.color, dataset);
     expect(document.querySelectorAll('.xaxis').length).toEqual(1);
   });
 
   it('drawYAxis', () => {
     // No svg, no draw.
     disableLogError(); // Silent console.error.
-    chart.drawYAxis(chart.color, data);
+    chart.drawYAxis(chart.color, dataset);
     enableLogError(); // Enable console.error.
     expect(document.querySelector('.yaxis')).toBeNull();
 
@@ -354,29 +400,28 @@ describe('CartesianChart class functions', () => {
 
     // No config, no axis
     disableLogError(); // Silent console.error.
-    chart.drawYAxis(chart.color, data);
+    chart.drawYAxis(chart.color, dataset);
     enableLogError(); // Enable console.error.
     expect(document.querySelector('.yaxis')).toBeNull();
 
     // No scale, no axis
     chart.setConfig(config);
     disableLogError(); // Silent console.error.
-    chart.drawYAxis(chart.color, data);
+    chart.drawYAxis(chart.color, dataset);
     enableLogError(); // Enable console.error.
     expect(document.querySelector('.yaxis')).toBeNull();
 
     // Draw axis (twice, must result only one yaxis).
-    const yData = data.map(dataRow => dataRow[config.yAxis.axisColumn]);
-    chart.yScale = chart.getScale(yData, AxisType.NUMBER, [0, 100]);
-    chart.drawYAxis(chart.color, data);
-    chart.drawYAxis(chart.color, data);
+    chart.yScale = chart.getScale(dataset, chart.getYColumnName(), AxisType.NUMBER, [0, 100]);
+    chart.drawYAxis(chart.color, dataset);
+    chart.drawYAxis(chart.color, dataset);
     expect(document.querySelectorAll('.yaxis').length).toEqual(1);
   });
 
   it('drawOppositeYAxis', () => {
     // No svg, no draw.
     disableLogError(); // Silent console.error.
-    chart.drawOppositeYAxis(chart.color, data);
+    chart.drawOppositeYAxis(chart.color, dataset);
     enableLogError(); // Enable console.error.
     expect(document.querySelector('.opposite-yaxis')).toBeNull();
 
@@ -386,7 +431,7 @@ describe('CartesianChart class functions', () => {
 
     // No config, no axis
     disableLogError(); // Silent console.error.
-    chart.drawOppositeYAxis(chart.color, data);
+    chart.drawOppositeYAxis(chart.color, dataset);
     enableLogError(); // Enable console.error.
     expect(document.querySelector('.opposite-yaxis')).toBeNull();
 
@@ -394,15 +439,14 @@ describe('CartesianChart class functions', () => {
     config.oppositeYAxis = { axisColumn: 'date' };
     chart.setConfig(config);
     disableLogError(); // Silent console.error.
-    chart.drawOppositeYAxis(chart.color, data);
+    chart.drawOppositeYAxis(chart.color, dataset);
     enableLogError(); // Enable console.error.
     expect(document.querySelector('.opposite-yaxis')).toBeNull();
 
     // Draw axis (twice, must result only one oppositeYaxis).
-    const oppositeYData = data.map(dataRow => dataRow[config.oppositeYAxis.axisColumn]);
-    chart.oppositeYScale = chart.getScale(oppositeYData, AxisType.DATE, [0, 100]);
-    chart.drawOppositeYAxis(chart.color, data);
-    chart.drawOppositeYAxis(chart.color, data);
+    chart.oppositeYScale = chart.getScale(dataset, chart.getOppositeYColumnName(), AxisType.DATE, [0, 100]);
+    chart.drawOppositeYAxis(chart.color, dataset);
+    chart.drawOppositeYAxis(chart.color, dataset);
     expect(document.querySelectorAll('.opposite-yaxis').length).toEqual(1);
   });
 
@@ -410,7 +454,8 @@ describe('CartesianChart class functions', () => {
     // Draw axis using d3 to ensure d3 select will work as expected
     chart.setConfig(config);
     chart.removeUpdateDrawSVG();
-    chart.setXAxis(data);
+    chart.dataset = dataset;
+    chart.setXAxis();
     let textGroup = chart.chart.selectAll('.xaxis .tick text');
     chart.wrapAxisLabels(textGroup, 30, 0);
     textGroup = chart.chart.selectAll('.xaxis .tick text tspan');

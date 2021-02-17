@@ -1,4 +1,4 @@
-export const data = [
+export const dataset = [
   {"id":1,"elevation":579,"distance":1,"date":"22/06/2019","company":"Hackett, Zulauf and Frami"},
   {"id":2,"elevation":596,"distance":2,"date":"29/08/2019","company":"Bergstrom and Sons"},
   {"id":3,"elevation":632,"distance":3,"date":"20/09/2019","company":"Lemke Group"},

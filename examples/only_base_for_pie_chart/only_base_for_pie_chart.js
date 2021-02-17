@@ -1,5 +1,5 @@
 import { arc as d3Arc, pie as d3Pie } from 'd3-shape';
-import { data } from '../data';
+import { dataset } from '../dataset';
 import { BaseD3ChartSVG } from '../../src/index';
 
 /**
@@ -13,7 +13,7 @@ const HEX_COLORS = [
   '#777', '#000000',
 ];
 
-data.splice(0, 94); // Less data for a nicer chart.
+dataset.splice(0, 94); // Less data for a nicer chart.
 
 class PieChart extends BaseD3ChartSVG {
   constructor() {
@@ -35,7 +35,7 @@ class PieChart extends BaseD3ChartSVG {
     const outerRadius = Math.min(this.width, this.height) / 2;
     const arc = d3Arc().innerRadius(outerRadius / 2).outerRadius(outerRadius)
     const pie = this.chart.selectAll()
-      .data(this.pie_(data))
+      .data(this.pie_(dataset))
       .enter()
       .append("g")
       .attr('class', 'arc');
