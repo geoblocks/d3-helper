@@ -1,4 +1,4 @@
-import { data } from '../data';
+import { dataset } from '../dataset';
 import { CartesianChart, AxisType } from '../../src/index';
 
 const configOne = {
@@ -34,7 +34,7 @@ const configTwo = {
   },
 };
 
-data.splice(0, 95); // Less data for a nicer chart.
+dataset.splice(0, 95); // Less data for a nicer chart.
 
 class hBarChart extends CartesianChart {
 
@@ -47,7 +47,7 @@ class hBarChart extends CartesianChart {
     const config = this.getConfig();
     // Use d3 helper functions.
     this.removeUpdateDrawSVG();
-    this.data = data;
+    this.dataset = dataset;
     this.setXAxis();
     this.setYAxis();
     this.drawTitle(config.color);
@@ -55,7 +55,7 @@ class hBarChart extends CartesianChart {
     // Draw a custom line chart.
     // Draw a custom  horizontal-bars chart
     const barGroups = this.chart.selectAll()
-      .data(this.data)
+      .data(this.dataset)
       .enter()
       .append('g');
     

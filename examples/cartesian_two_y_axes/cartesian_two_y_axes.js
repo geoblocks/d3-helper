@@ -1,6 +1,6 @@
 import { curveMonotoneX as d3CurveMonotoneX, line as d3Line } from 'd3-shape';
 import { transition } from 'd3-transition';
-import { data as rawData } from '../data';
+import { dataset as rawDataset } from '../dataset';
 import { CartesianChart, AxisType } from '../../src/index';
 
 const config = {
@@ -20,13 +20,13 @@ const config = {
   },
 };
 
-let data = rawData.slice(40, 50); // Less data for a nicer chart.
-data = data.map((d) => { //use date object.
-  const date = d.date.split('/');
-  d.date = new Date(`${date[2]}-${date[1]}-${date[0]}`); // Need yyyy-mm-dd, not dd-mm-yyyy.
-  return d;
+let dataset = rawDataset.slice(40, 50); // Less data for a nicer chart.
+dataset = dataset.map((dataItem) => { //use date object.
+  const date = dataItem.date.split('/');
+  dataItem.date = new Date(`${date[2]}-${date[1]}-${date[0]}`); // Need yyyy-mm-dd, not dd-mm-yyyy.
+  return dataItem;
 });
-data.sort((d1, d2) => d1.date > d2.date ? 1 : -1); // Sort per date.
+dataset.sort((d1, d2) => d1.date > d2.date ? 1 : -1); // Sort per date.
 
 class lineBarChart extends CartesianChart {
   constructor() {
@@ -37,19 +37,19 @@ class lineBarChart extends CartesianChart {
     // Use d3 helper functions.
     this.setConfig(config);
     this.removeUpdateDrawSVG();
-    this.data = data;
+    this.dataset = dataset;
     this.setXAxis();
     this.setYAxis();
-    this.setOppositeYAxis(data);
+    this.setOppositeYAxis();
 
     // Draw a custom vertical bars chart.
     const barGroups = this.chart.selectAll()
-      .data(this.data)
+      .data(this.dataset)
       .enter()
       .append('g');
 
     const [drawWidth, drawHeight] = this.getDrawableSize();
-    const barWidth = drawWidth / 4 / this.data.length;
+    const barWidth = drawWidth / 4 / this.dataset.length;
     barGroups
       .append('rect')
       .attr('class', 'bar')
@@ -73,7 +73,7 @@ class lineBarChart extends CartesianChart {
     const line = this.chart
       .append('path')
       .attr('class', 'line')
-      .attr('d', lineFunction(this.data))
+      .attr('d', lineFunction(this.dataset))
       .attr('stroke', `rgb(${config.oppositeYAxis.color.join(',')})`)
       .attr('stroke-width', '2')
       .attr('fill', 'none');

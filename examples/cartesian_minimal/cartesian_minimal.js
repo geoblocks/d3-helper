@@ -1,5 +1,5 @@
 import { curveMonotoneX as d3CurveMonotoneX, line as d3Line } from 'd3-shape';
-import { data } from '../data';
+import { dataset } from '../dataset';
 import { CartesianChart, AxisType } from '../../src/index';
 
 const config = {
@@ -11,7 +11,7 @@ const config = {
   },
 };
 
-data.splice(0, 50); // Less data for a nicer chart.
+dataset.splice(0, 50); // Less data for a nicer chart.
 
 class LineChart extends CartesianChart {
   constructor() {
@@ -27,7 +27,7 @@ class LineChart extends CartesianChart {
     this.useDataLabelAsDefaultForAxis('xAxis');
     this.useDataLabelAsDefaultForAxis('yAxis');
     // Draw axis using CartesianChart.
-    this.data = data;
+    this.dataset = dataset;
     this.setXAxis();
     this.setYAxis();
 
@@ -40,7 +40,7 @@ class LineChart extends CartesianChart {
     this.chart
       .append('path')
       .attr('class', 'line')
-      .attr('d', lineFunction(this.data))
+      .attr('d', lineFunction(this.dataset))
       .attr('stroke', `rgb(${this.color.join(',')})`)
       .attr('stroke-width', '1')
       .attr('fill', 'none');
