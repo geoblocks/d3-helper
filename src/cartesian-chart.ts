@@ -254,6 +254,33 @@ export class CartesianChart extends BaseD3ChartSVG {
   }
 
   /**
+   * Returns value of the x scale for a specific dataItem.
+   * The xScale must be defined otherwise an error will be thrown.
+   * For performance purpose, no check are performed.
+   */
+  getXScaleValue(dataItem: any): number {
+    return this.xScale(dataItem[this.getXColumnName()]);
+  }
+
+  /**
+   * Returns value of the y scale for a specific dataItem.
+   * The yScale must be defined otherwise an error will be thrown.
+   * For performance purpose, no check are performed.
+   */
+  getYScaleValue(dataItem: any): number {
+    return this.yScale(dataItem[this.getYColumnName()]);
+  }
+
+  /**
+   * Returns value of the opposite y scale for a specific dataItem.
+   * The oppositeYScale must be defined otherwise an error will be thrown.
+   * For performance purpose, no check are performed.
+   */
+  getOppositeYScaleValue(dataItem: any): number {
+    return this.oppositeYScale(dataItem[this.getOppositeYColumnName()]);
+  }
+
+  /**
    * Returns the axisColumn name after a check if data exist for this axis column key.
    */
   getCheckedAxisColumnName(axisConfig: CartesianChartAxisConfig, dataset: DataItem[]): string {

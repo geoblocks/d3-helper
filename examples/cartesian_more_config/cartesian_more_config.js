@@ -64,9 +64,9 @@ class hBarChart extends CartesianChart {
       .append('rect')
       .attr('class', 'bar')
       .attr('x', 0)
-      .attr('y', d => this.yScale(d[this.getYColumnName()]) - barHeight / 2)
+      .attr('y', d => this.getYScaleValue(d) - barHeight / 2)
       .attr('height', barHeight)
-      .attr('width', d => this.xScale(d[this.getXColumnName()]))
+      .attr('width', d => this.getXScaleValue(d))
       .attr('fill', `rgb(${config.color.join(',')})`);
   }
 }

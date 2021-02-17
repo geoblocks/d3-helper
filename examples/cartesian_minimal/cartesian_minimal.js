@@ -34,8 +34,8 @@ class LineChart extends CartesianChart {
     // Draw a custom line chart.
     const lineFunction = d3Line()
       .curve(d3CurveMonotoneX)
-      .x(d => this.xScale(d[this.getXColumnName()]))
-      .y(d => this.yScale(d[this.getYColumnName()]));
+      .x(d => this.getXScaleValue(d))
+      .y(d => this.getYScaleValue(d));
 
     this.chart
       .append('path')

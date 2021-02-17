@@ -53,7 +53,7 @@ class lineBarChart extends CartesianChart {
     barGroups
       .append('rect')
       .attr('class', 'bar')
-      .attr('x', d => this.xScale(d[this.getXColumnName()]) - barWidth / 2)
+      .attr('x', d => this.getXScaleValue(d) - barWidth / 2)
       .attr('y', drawHeight)
       .attr('height',  0)
       .attr('width', barWidth)
@@ -61,14 +61,14 @@ class lineBarChart extends CartesianChart {
       // Add a custom transition on two attributes to have growing vertical bars.
       .transition()
       .duration(1500)
-      .attr('y', d => this.yScale(d[this.getYColumnName()]))
-      .attr('height', d => drawHeight - this.yScale(d[this.getYColumnName()]));
+      .attr('y', d => this.getYScaleValue(d))
+      .attr('height', d => drawHeight - this.getYScaleValue(d));
 
     // Draw a custom line chart on x and opposit y axis.
     const lineFunction = d3Line()
       .curve(d3CurveMonotoneX)
-      .x(d => this.xScale(d[this.getXColumnName()]))
-      .y(d => this.oppositeYScale(d[this.getOppositeYColumnName()]));
+      .x(d => this.getXScaleValue(d))
+      .y(d => this.getOppositeYScaleValue(d));
 
     const line = this.chart
       .append('path')

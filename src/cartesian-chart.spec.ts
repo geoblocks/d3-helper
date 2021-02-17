@@ -141,6 +141,32 @@ describe('CartesianChart class functions', () => {
     expect(chart.getOppositeYColumnName()).toEqual('date');
   });
 
+  it('getXScaleValue', () => {
+    chart.setConfig(config);
+    chart.removeUpdateDrawSVG();
+    chart.dataset = dataset;
+    chart.setXAxis();
+    expect(chart.getXScaleValue(dataset[0])).toBeGreaterThan(0);
+  });
+
+  it('getYScaleValue', () => {
+    chart.setConfig(config);
+    chart.removeUpdateDrawSVG();
+    chart.dataset = dataset;
+    chart.setYAxis();
+    expect(chart.getYScaleValue(dataset[0])).toBeGreaterThan(0);
+  });
+
+  it('getOppositeYScaleValue', () => {
+    // Set axis and get value again.
+    config.oppositeYAxis = { axisColumn: 'date' };
+    chart.setConfig(config);
+    chart.removeUpdateDrawSVG();
+    chart.dataset = dataset;
+    chart.setOppositeYAxis();
+    expect(chart.getOppositeYScaleValue(dataset[0])).toBeGreaterThan(0);
+  });
+
   it('getCheckedAxisColumnName', () => {
     expect(chart.getCheckedAxisColumnName(null, dataset)).toBeNull();
     expect(chart.getCheckedAxisColumnName(config.xAxis, [])).toBeNull();
