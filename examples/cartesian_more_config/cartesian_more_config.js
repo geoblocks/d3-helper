@@ -37,7 +37,6 @@ const configTwo = {
 dataset.splice(0, 95); // Less data for a nicer chart.
 
 class hBarChart extends CartesianChart {
-
   constructor(config) {
     super('.chart');
     this.setConfig(config);
@@ -54,19 +53,16 @@ class hBarChart extends CartesianChart {
 
     // Draw a custom line chart.
     // Draw a custom  horizontal-bars chart
-    const barGroups = this.chart.selectAll()
-      .data(this.dataset)
-      .enter()
-      .append('g');
-    
+    const barGroups = this.chart.selectAll().data(this.dataset).enter().append('g');
+
     const barHeight = 10;
     barGroups
       .append('rect')
       .attr('class', 'bar')
       .attr('x', 0)
-      .attr('y', d => this.getYScaleValue(d) - barHeight / 2)
+      .attr('y', (d) => this.getYScaleValue(d) - barHeight / 2)
       .attr('height', barHeight)
-      .attr('width', d => this.getXScaleValue(d))
+      .attr('width', (d) => this.getXScaleValue(d))
       .attr('fill', `rgb(${config.color.join(',')})`);
   }
 }

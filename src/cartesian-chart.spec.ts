@@ -1,7 +1,6 @@
 import { CartesianChart, CartesianChartConfig, AxisType } from './cartesian-chart';
 
 describe('CartesianChart class functions', () => {
-
   let chart;
   let config;
   const dataset = [
@@ -14,7 +13,9 @@ describe('CartesianChart class functions', () => {
   let logErrorFn;
   const disableLogError = () => {
     logErrorFn = console.error;
-    console.error = () => {};
+    console.error = () => {
+      return;
+    };
   };
   const enableLogError = () => {
     console.error = logErrorFn;
@@ -24,8 +25,14 @@ describe('CartesianChart class functions', () => {
     // Creare an element to draw the chart.
     document.body.innerHTML = '<div class="my-chart"></div>';
     // Cheat a little bit to have a size for the component.
-    Object.defineProperty(HTMLElement.prototype, 'offsetHeight', { configurable: true, value: 300 });
-    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', { configurable: true, value: 400 });
+    Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+      configurable: true,
+      value: 300,
+    });
+    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+      configurable: true,
+      value: 400,
+    });
     // Polyfill the missing getComputedTextLength method in test
     window.SVGElement.prototype['getComputedTextLength'] = () => 50;
     // Create a chart Object.
@@ -147,6 +154,7 @@ describe('CartesianChart class functions', () => {
     chart.dataset = dataset;
     chart.setXAxis();
     expect(chart.getXScaleValue(dataset[0])).toBeGreaterThan(0);
+    expect(chart.getXScaleValue(dataset[1])).toBeGreaterThan(0);
   });
 
   it('getYScaleValue', () => {
@@ -154,7 +162,8 @@ describe('CartesianChart class functions', () => {
     chart.removeUpdateDrawSVG();
     chart.dataset = dataset;
     chart.setYAxis();
-    expect(chart.getYScaleValue(dataset[0])).toBeGreaterThan(0);
+    expect(chart.getYScaleValue(dataset[0])).toBeUndefined();
+    expect(chart.getYScaleValue(dataset[1])).toBeGreaterThan(0);
   });
 
   it('getOppositeYScaleValue', () => {
@@ -164,7 +173,8 @@ describe('CartesianChart class functions', () => {
     chart.removeUpdateDrawSVG();
     chart.dataset = dataset;
     chart.setOppositeYAxis();
-    expect(chart.getOppositeYScaleValue(dataset[0])).toBeGreaterThan(0);
+    expect(chart.getOppositeYScaleValue(dataset[0])).toBeUndefined();
+    expect(chart.getOppositeYScaleValue(dataset[1])).toBeGreaterThan(0);
   });
 
   it('getCheckedAxisColumnName', () => {
@@ -381,7 +391,12 @@ describe('CartesianChart class functions', () => {
     expect(document.querySelector('.xaxis')).toBeNull();
 
     // Draw axis (twice, must result only one xaxis).
-    chart.xScale = chart.getScale(dataset, chart.getXColumnName(), AxisType.TEXT, [0, 100]);
+    chart.xScale = chart.getScale(
+      dataset,
+      chart.getXColumnName(),
+      AxisType.TEXT,
+      [0, 100]
+    );
     chart.drawXAxis(chart.color, dataset);
     chart.drawXAxis(chart.color, dataset);
     expect(document.querySelectorAll('.xaxis').length).toEqual(1);
@@ -412,7 +427,12 @@ describe('CartesianChart class functions', () => {
     expect(document.querySelector('.yaxis')).toBeNull();
 
     // Draw axis (twice, must result only one yaxis).
-    chart.yScale = chart.getScale(dataset, chart.getYColumnName(), AxisType.NUMBER, [0, 100]);
+    chart.yScale = chart.getScale(
+      dataset,
+      chart.getYColumnName(),
+      AxisType.NUMBER,
+      [0, 100]
+    );
     chart.drawYAxis(chart.color, dataset);
     chart.drawYAxis(chart.color, dataset);
     expect(document.querySelectorAll('.yaxis').length).toEqual(1);
@@ -444,7 +464,12 @@ describe('CartesianChart class functions', () => {
     expect(document.querySelector('.opposite-yaxis')).toBeNull();
 
     // Draw axis (twice, must result only one oppositeYaxis).
-    chart.oppositeYScale = chart.getScale(dataset, chart.getOppositeYColumnName(), AxisType.DATE, [0, 100]);
+    chart.oppositeYScale = chart.getScale(
+      dataset,
+      chart.getOppositeYColumnName(),
+      AxisType.DATE,
+      [0, 100]
+    );
     chart.drawOppositeYAxis(chart.color, dataset);
     chart.drawOppositeYAxis(chart.color, dataset);
     expect(document.querySelectorAll('.opposite-yaxis').length).toEqual(1);
@@ -522,7 +547,8 @@ describe('CartesianChart class functions', () => {
     expect(chart.truncText('abc')).toEqual('abc');
     expect(chart.truncText('abc', 1)).toEqual('a …');
     expect(chart.truncText('1234 1234 1234 1234 1234 1234567')).toEqual(
-      '1234 1234 1234 1234 1234 12345 …');
+      '1234 1234 1234 1234 1234 12345 …'
+    );
   });
 
   it('compareData', () => {
