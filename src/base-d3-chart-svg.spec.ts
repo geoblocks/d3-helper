@@ -1,13 +1,14 @@
 import { BaseD3ChartSVG } from './base-d3-chart-svg';
 
 describe('BaseD3ChartSvg calss functions', () => {
-
   let chart;
 
   let logErrorFn;
   const disableLogError = () => {
     logErrorFn = console.error;
-    console.error = () => {};
+    console.error = () => {
+      return;
+    };
   };
   const enableLogError = () => {
     console.error = logErrorFn;
@@ -17,8 +18,14 @@ describe('BaseD3ChartSvg calss functions', () => {
     // Creare an element to draw the chart.
     document.body.innerHTML = '<div class="my-chart"></div>';
     // Cheat a little bit to have a size for the component.
-    Object.defineProperty(HTMLElement.prototype, 'offsetHeight', { configurable: true, value: 300 });
-    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', { configurable: true, value: 400 });
+    Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+      configurable: true,
+      value: 300,
+    });
+    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+      configurable: true,
+      value: 400,
+    });
     // Create a chart Object.
     chart = new BaseD3ChartSVG('.my-chart');
   });
@@ -46,7 +53,11 @@ describe('BaseD3ChartSvg calss functions', () => {
     delete chart.margins.bottom;
     chart.setMargins({ top: 100, bottom: 100 });
     expect(chart.margins).toEqual({
-      top: 100, right: 80, bottom: 100, left: 80 });
+      top: 100,
+      right: 80,
+      bottom: 100,
+      left: 80,
+    });
   });
 
   it('getDrawableSize', () => {

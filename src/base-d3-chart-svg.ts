@@ -15,7 +15,6 @@ export interface Margins {
  * Draw and manage a svg element with a chart zone inside.
  */
 export class BaseD3ChartSVG {
-
   private lastPartD3Selector_: string;
   private d3Selector_: string;
 
@@ -86,7 +85,8 @@ export class BaseD3ChartSVG {
       .attr('preserveAspectRatio', 'xMinYMin')
       .attr('class', 'svg');
 
-    this.chart = this.svg.append('g')
+    this.chart = this.svg
+      .append('g')
       .attr('transform', `translate(${this.margins.left}, ${this.margins.top})`)
       .attr('class', 'chart');
   }
