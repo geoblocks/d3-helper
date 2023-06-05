@@ -3,4 +3,5 @@
 /dist/
 /coverage/
 /apidoc/
-.cache/
+/.parcel-cache/
+/.idea/

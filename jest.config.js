@@ -1,13 +1,18 @@
 module.exports = {
-  "moduleFileExtensions": [
+  moduleFileExtensions: [
     "ts",
     "js"
   ],
-  "transform": {
-    "^.+\\.ts$": "<rootDir>/node_modules/babel-jest"
+  testEnvironment: "jsdom",
+  transform: {
+    "^.+\\.(ts|tsx)$": "ts-jest",
+    "^.+\\.jsx?$": "babel-jest", // <- transform JS files
   },
-  "testRegex": "/src/.*\\.spec.(ts|js)$",
-  "collectCoverageFrom": [
+  testRegex: "/src/.*\\.spec.(ts|js)$",
+  collectCoverageFrom: [
     "src/*.ts"
-  ]
+  ],
+  transformIgnorePatterns: [
+    "/node_modules/(?!(d3-array|d3-selection|d3-axis|d3-format|d3-time-format|d3-scale)/)",
+  ],
 };
