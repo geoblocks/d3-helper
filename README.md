@@ -18,10 +18,10 @@ Class that provides functions to draw, clean and manage a SVG with a chart insid
 
 #### CartesianChart
 
-Extends BaseD3ChartSVG.
-Class that provides functions to manage cartesian charts (for bars, scatterplots, lines...)
-Mainly manage the axes of cartesian charts.
-Supported axes data types are: Date, number and text.
+ - Extends BaseD3ChartSVG.
+ - Class that provides functions to manage cartesian charts (for bars, scatterplots, lines...)
+ - Mainly manage the axes of cartesian charts.
+ - Supported axes data types are: Date, number and text.
 
 ### Supported browsers
 
@@ -37,7 +37,7 @@ npm run build
 npm run start
 ```
 
-Examples are now accessible at http://localhost:8080/
+Examples are now accessible at http://localhost:1234/
 
 ## Build the doc
 
