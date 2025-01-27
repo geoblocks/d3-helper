@@ -395,7 +395,7 @@ describe('CartesianChart class functions', () => {
       dataset,
       chart.getXColumnName(),
       AxisType.TEXT,
-      [0, 100]
+      [0, 100],
     );
     chart.drawXAxis(chart.color, dataset);
     chart.drawXAxis(chart.color, dataset);
@@ -431,7 +431,7 @@ describe('CartesianChart class functions', () => {
       dataset,
       chart.getYColumnName(),
       AxisType.NUMBER,
-      [0, 100]
+      [0, 100],
     );
     chart.drawYAxis(chart.color, dataset);
     chart.drawYAxis(chart.color, dataset);
@@ -468,7 +468,7 @@ describe('CartesianChart class functions', () => {
       dataset,
       chart.getOppositeYColumnName(),
       AxisType.DATE,
-      [0, 100]
+      [0, 100],
     );
     chart.drawOppositeYAxis(chart.color, dataset);
     chart.drawOppositeYAxis(chart.color, dataset);
@@ -547,7 +547,7 @@ describe('CartesianChart class functions', () => {
     expect(chart.truncText('abc')).toEqual('abc');
     expect(chart.truncText('abc', 1)).toEqual('a …');
     expect(chart.truncText('1234 1234 1234 1234 1234 1234567')).toEqual(
-      '1234 1234 1234 1234 1234 12345 …'
+      '1234 1234 1234 1234 1234 12345 …',
     );
   });
 

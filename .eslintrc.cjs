@@ -9,10 +9,17 @@ module.exports = {
 	},
 	overrides: [{
 		files: [
-			"*.spec.ts"
-		],
+		        "*.spec.ts"
+                ],
 		rules: {
-			"@typescript-eslint/ban-ts-comment": "warn"
+			"@typescript-eslint/ban-ts-comment": "warn",
 		}
-	}]
+	}, {
+		files: [
+			"*.ts"
+                ],
+		rules: {
+			"@typescript-eslint/no-explicit-any": "warn",
+                },
+        }]
 };

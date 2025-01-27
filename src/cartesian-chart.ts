@@ -294,7 +294,7 @@ export class CartesianChart extends BaseD3ChartSVG {
    */
   getCheckedAxisColumnName(
     axisConfig: CartesianChartAxisConfig,
-    dataset: DataItem[]
+    dataset: DataItem[],
   ): string {
     const axisColumn = axisConfig?.axisColumn;
     if (!axisColumn) {
@@ -315,7 +315,7 @@ export class CartesianChart extends BaseD3ChartSVG {
    */
   getDataType(dataset: DataItem[], axisColumn: string): AxisType {
     const definedDataItem = dataset.find(
-      (dataItem) => dataItem[axisColumn] !== null && dataItem[axisColumn] !== undefined
+      (dataItem) => dataItem[axisColumn] !== null && dataItem[axisColumn] !== undefined,
     );
     if (!definedDataItem) {
       console.error(`No value for axisColumn "${axisColumn}"`);
@@ -375,7 +375,7 @@ export class CartesianChart extends BaseD3ChartSVG {
     }
     const axisType = this.getDataType(
       this.dataset,
-      axisConfig.tickLabelColumn || axisColumn
+      axisConfig.tickLabelColumn || axisColumn,
     );
     this.xScale = this.getScale(this.dataset, axisColumn, axisType, [0, drawableWidth]);
     if (!this.config_.xAxis.hideAxis) {
@@ -406,7 +406,7 @@ export class CartesianChart extends BaseD3ChartSVG {
     }
     const axisType = this.getDataType(
       this.dataset,
-      axisConfig.tickLabelColumn || axisColumn
+      axisConfig.tickLabelColumn || axisColumn,
     );
     this.yScale = this.getScale(this.dataset, axisColumn, axisType, [drawableHeight, 0]);
     if (!this.config_.yAxis.hideAxis) {
@@ -437,7 +437,7 @@ export class CartesianChart extends BaseD3ChartSVG {
     }
     const axisType = this.getDataType(
       this.dataset,
-      axisConfig.tickLabelColumn || axisColumn
+      axisConfig.tickLabelColumn || axisColumn,
     );
     this.oppositeYScale = this.getScale(this.dataset, axisColumn, axisType, [
       drawableHeight,
@@ -573,7 +573,7 @@ export class CartesianChart extends BaseD3ChartSVG {
     const axis = this.setAxisTick(
       this.config_.oppositeYAxis,
       d3AxisRight(this.oppositeYScale),
-      dataset
+      dataset,
     );
     this.chart
       .append('g')
@@ -665,7 +665,7 @@ export class CartesianChart extends BaseD3ChartSVG {
   setAxisTick(
     axisConfig: CartesianChartAxisConfig,
     baseAxis: any,
-    dataset: DataItem[]
+    dataset: DataItem[],
   ): any {
     const ticks = axisConfig.tickNumber || 5;
     const axisColumn = this.getCheckedAxisColumnName(axisConfig, dataset);
@@ -704,23 +704,28 @@ export class CartesianChart extends BaseD3ChartSVG {
     dataset: DataItem[],
     axisColum: string,
     axisType: string,
-    range: number[]
+    range: number[],
   ): any {
     const axisData = this.getAxisData(dataset, axisColum);
     let scale: any;
     if (axisType === AxisType.TEXT) {
-      scale = d3ScalePoint().domain(axisData).range(range).padding(0.5);
-    } else {
-      if (axisType === AxisType.DATE) {
-        scale = d3ScaleTime();
-      } else {
-        scale = d3ScaleLinear();
-      }
-      scale
-        .domain(this.determineDomain(d3Min(axisData), d3Max(axisData)))
-        .nice()
-        .range(range);
+      scale = d3ScalePoint()
+        .domain(axisData as any)
+        .range(range)
+        .padding(0.5);
+      return scale;
     }
+    const numDateAxisData = axisData as (number | Date)[];
+    if (axisType === AxisType.DATE) {
+      scale = d3ScaleTime();
+    } else {
+      scale = d3ScaleLinear();
+    }
+    scale
+      .domain(this.determineDomain(d3Min(numDateAxisData), d3Max(numDateAxisData)))
+      .nice()
+      .range(range);
+
     return scale;
   }
 
@@ -777,7 +782,7 @@ export class CartesianChart extends BaseD3ChartSVG {
 
   /**
    * Compare two value of the same type. Return True if they are defined and match.
-   * @param axisColumnName: the base value.
+   * @param value the base value.
    * @param selectedValue the value to compare with.
    */
   compareData(value: DataValue, selectedValue: DataValue): boolean {
