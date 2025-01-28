@@ -1,3 +1,4 @@
+import { describe, beforeEach, it, expect } from 'vitest';
 import { CartesianChart, CartesianChartConfig, AxisType } from './cartesian-chart';
 
 describe('CartesianChart class functions', () => {
@@ -34,7 +35,8 @@ describe('CartesianChart class functions', () => {
       value: 400,
     });
     // Polyfill the missing getComputedTextLength method in test
-    window.SVGElement.prototype['getComputedTextLength'] = () => 50;
+    window.SVGTSpanElement.prototype['getComputedTextLength'] = () => 50;
+    window.SVGTextElement.prototype['getComputedTextLength'] = () => 50;
     // Create a chart Object.
     chart = new CartesianChart('.my-chart');
 
@@ -395,7 +397,7 @@ describe('CartesianChart class functions', () => {
       dataset,
       chart.getXColumnName(),
       AxisType.TEXT,
-      [0, 100]
+      [0, 100],
     );
     chart.drawXAxis(chart.color, dataset);
     chart.drawXAxis(chart.color, dataset);
@@ -431,7 +433,7 @@ describe('CartesianChart class functions', () => {
       dataset,
       chart.getYColumnName(),
       AxisType.NUMBER,
-      [0, 100]
+      [0, 100],
     );
     chart.drawYAxis(chart.color, dataset);
     chart.drawYAxis(chart.color, dataset);
@@ -468,7 +470,7 @@ describe('CartesianChart class functions', () => {
       dataset,
       chart.getOppositeYColumnName(),
       AxisType.DATE,
-      [0, 100]
+      [0, 100],
     );
     chart.drawOppositeYAxis(chart.color, dataset);
     chart.drawOppositeYAxis(chart.color, dataset);
@@ -547,7 +549,7 @@ describe('CartesianChart class functions', () => {
     expect(chart.truncText('abc')).toEqual('abc');
     expect(chart.truncText('abc', 1)).toEqual('a …');
     expect(chart.truncText('1234 1234 1234 1234 1234 1234567')).toEqual(
-      '1234 1234 1234 1234 1234 12345 …'
+      '1234 1234 1234 1234 1234 12345 …',
     );
   });
 

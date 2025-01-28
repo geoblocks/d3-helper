@@ -1,6 +1,7 @@
+import { describe, beforeEach, it, expect } from 'vitest';
 import { BaseD3ChartSVG } from './base-d3-chart-svg';
 
-describe('BaseD3ChartSvg calss functions', () => {
+describe('BaseD3ChartSvg class functions', () => {
   let chart;
 
   let logErrorFn;

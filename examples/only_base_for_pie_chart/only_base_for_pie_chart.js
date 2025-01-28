@@ -79,7 +79,7 @@ class PieChart extends BaseD3ChartSVG {
       .append('text')
       .attr(
         'transform',
-        (d) => `translate(${arc.centroid(d)[0] - 12} ${arc.centroid(d)[1]})`
+        (d) => `translate(${arc.centroid(d)[0] - 12} ${arc.centroid(d)[1]})`,
       )
       .attr('dy', '.35em')
       .text((d) => d.data.id);
