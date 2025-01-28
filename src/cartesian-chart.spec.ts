@@ -1,3 +1,4 @@
+import { describe, beforeEach, it, expect } from 'vitest';
 import { CartesianChart, CartesianChartConfig, AxisType } from './cartesian-chart';
 
 describe('CartesianChart class functions', () => {
@@ -34,7 +35,8 @@ describe('CartesianChart class functions', () => {
       value: 400,
     });
     // Polyfill the missing getComputedTextLength method in test
-    window.SVGElement.prototype['getComputedTextLength'] = () => 50;
+    window.SVGTSpanElement.prototype['getComputedTextLength'] = () => 50;
+    window.SVGTextElement.prototype['getComputedTextLength'] = () => 50;
     // Create a chart Object.
     chart = new CartesianChart('.my-chart');
 
